@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { CodeBlock } from "./Codeblock";
-import { renderInline } from "./renderinline";
-import { HeadingBlock, BlockquoteBlock, TableBlock, ListBlock, DetailsBlock } from "./blocks";
+import { CodeBlock } from "./Code.block";
+import { renderInline } from "./Render.inline";
+import { HeadingBlock, BlockquoteBlock, TableBlock, ListBlock, DetailsBlock } from "./Blocks";
 import { slugify } from "./utils";
 
 export function parseMarkdown(markdown: string): React.ReactNode[] {

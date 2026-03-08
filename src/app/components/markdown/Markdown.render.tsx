@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import { motion } from "framer-motion";
-import { parseMarkdown } from "./parseMarkdown";
+import { parseMarkdown } from "./Parse.markdown";
 import { TableOfContents } from "./Table";
 import { MarkdownRendererProps } from "./types";
 
@@ -28,11 +28,11 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
   );
 }
 
-export { parseMarkdown } from "./parseMarkdown";
-export { renderInline } from "./renderinline";
-export { CodeBlock } from "./Codeblock";
+export { parseMarkdown } from "./Parse.markdown";
+export { renderInline } from "./Render.inline";
+export { CodeBlock } from "./Code.block";
 export { TableOfContents } from "./Table";
-export { HeadingBlock, BlockquoteBlock, TableBlock, ListBlock, DetailsBlock } from "./blocks";
+export { HeadingBlock, BlockquoteBlock, TableBlock, ListBlock, DetailsBlock } from "./Blocks";
 export * from "./types";
 export { slugify, syntaxHighlight } from "./utils";
-export { getLangIcon } from "./langicons";
+export { getLangIcon } from "./Lang.icons";

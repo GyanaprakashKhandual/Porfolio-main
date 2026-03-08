@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Hash, ChevronRight, Check } from "lucide-react";
-import { renderInline } from "./renderinline";
+import { renderInline } from "./Render.inline";
 import { ListItem } from "./types";
 
 export function HeadingBlock({ level, text, id }: { level: number; text: string; id: string }) {

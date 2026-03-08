@@ -3,7 +3,7 @@
 import React, { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Copy, Check } from "lucide-react";
-import { getLangIcon } from "./langicons";
+import { getLangIcon } from "./Lang.icons";
 import { syntaxHighlight } from "./utils";
 import { CodeBlockProps } from "./types";
 

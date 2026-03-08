@@ -46,7 +46,8 @@ export default async function DocSlugPage({ params }: DocSlugPageProps) {
   const flat = flattenSidebarItems(sections);
   const currentIndex = flat.findIndex((f) => f.slug === slug);
   const prevItem = currentIndex > 0 ? flat[currentIndex - 1] : null;
-  const nextItem = currentIndex < flat.length - 1 ? flat[currentIndex + 1] : null;
+  const nextItem =
+    currentIndex < flat.length - 1 ? flat[currentIndex + 1] : null;
 
   return (
     <DocPageClient
@@ -54,8 +55,12 @@ export default async function DocSlugPage({ params }: DocSlugPageProps) {
       fileName={entry.fileName}
       techSlug={techSlug}
       docSlug={slug}
-      prevItem={prevItem ? { label: prevItem.label, slug: prevItem.slug } : null}
-      nextItem={nextItem ? { label: nextItem.label, slug: nextItem.slug } : null}
+      prevItem={
+        prevItem ? { label: prevItem.label, slug: prevItem.slug } : null
+      }
+      nextItem={
+        nextItem ? { label: nextItem.label, slug: nextItem.slug } : null
+      }
     />
   );
 }
