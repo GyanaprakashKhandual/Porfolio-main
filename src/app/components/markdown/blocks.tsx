@@ -46,7 +46,7 @@ export function HeadingBlock({ level, text, id }: { level: number; text: string;
 }
 
 export function BlockquoteBlock({ content }: { content: string }) {
-  const { parseMarkdown } = require("./parseMarkdown");
+  const { parseMarkdown } = require("./Parse.markdown");
   const firstLine = content.split("\n")[0];
   const calloutTypes: Record<string, { bg: string; border: string }> = {
     "💡": { bg: "bg-[#fef9c3] dark:bg-[#3d3000]", border: "border-[#fde68a] dark:border-[#7a6000]" },
@@ -216,7 +216,7 @@ export function ListBlock({ lines, ordered }: { lines: string[]; ordered: boolea
 }
 
 export function DetailsBlock({ summary, content }: { summary: string; content: string }) {
-  const { parseMarkdown } = require("./parseMarkdown");
+  const { parseMarkdown } = require("./Parse.markdown");
   const [open, setOpen] = useState(false);
 
   return (
