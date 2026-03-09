@@ -3,7 +3,7 @@
 import React from "react";
 import { CodeBlock } from "./Code.block";
 import { renderInline } from "./Render.inline";
-import { HeadingBlock, BlockquoteBlock, TableBlock, ListBlock, DetailsBlock } from "./Blocks";
+import { HeadingBlock, BlockquoteBlock, TableBlock, ListBlock, DetailsBlock } from "./blocks";
 import { slugify } from "./utils";
 
 export function parseMarkdown(markdown: string): React.ReactNode[] {

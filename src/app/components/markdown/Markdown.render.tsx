@@ -32,7 +32,7 @@ export { parseMarkdown } from "./Parse.markdown";
 export { renderInline } from "./Render.inline";
 export { CodeBlock } from "./Code.block";
 export { TableOfContents } from "./Table";
-export { HeadingBlock, BlockquoteBlock, TableBlock, ListBlock, DetailsBlock } from "./Blocks";
+export { HeadingBlock, BlockquoteBlock, TableBlock, ListBlock, DetailsBlock } from "./blocks";
 export * from "./types";
 export { slugify, syntaxHighlight } from "./utils";
 export { getLangIcon } from "./Lang.icons";
