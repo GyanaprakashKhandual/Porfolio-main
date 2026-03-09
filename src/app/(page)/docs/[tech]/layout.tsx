@@ -2,7 +2,7 @@ import DocSidebar from "@/app/components/Doc.sidebar";
 
 interface DocsLayoutProps {
   children: React.ReactNode;
-  params: { tech: string };
+  params: Promise<{ tech: string }>;
 }
 
 export default async function DocsLayout({
