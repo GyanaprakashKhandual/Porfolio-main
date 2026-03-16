@@ -5,7 +5,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { api, getMusicActivityUrl } from "@/configs/env.config";
+import { getMusicActivityUrl } from "@/configs/env.config";
 import {
   Music2,
   Disc3,
@@ -25,8 +25,19 @@ import {
   TrendingUp,
   ChevronDown,
 } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "../lib/hooks";
+import { fetchAllMusic } from "../lib/features/music/music.slice";
+import { selectAllTracks,  selectMusicLoading,
+  selectMusicError } from "../lib/features/music/music.selector";
+import {
+  fetchLikes,
+  toggleLike,
+  optimisticToggleLike,
+} from "../lib/features/likes/like.slice";
+import { selectLikesByTrackId } from "../lib/features/likes/like.selector";
+import { fetchComments, addComment } from "../lib/features/comments/comment.slice";
+import { selectCommentsByTrackId } from "../lib/features/comments/comment.selector";
 
-const BASE_URL = api.music;
 const ACTIVITY_URL = getMusicActivityUrl;
 
 // ── Hardcoded demo userId (replace with real auth) ───────────────────────────
@@ -43,19 +54,6 @@ interface MusicItem {
   coverImageUrl: string | null;
   musicUrl?: string;
   lyrics?: string;
-}
-
-interface ActivityMeta {
-  likeCount: number;
-  userLiked: boolean;
-  commentCount: number;
-}
-
-interface Comment {
-  _id: string;
-  userId: { _id: string; name?: string; email?: string };
-  comment: { text: string; createdAt: string };
-  createdAt: string;
 }
 
 function formatDuration(seconds: number): string {
@@ -81,49 +79,259 @@ function SkeletonCard() {
   );
 }
 
+// ── Per-track activity selector wrapper ─────────────────────────────────────
+function TrackActivityRow({
+  track,
+  index,
+  isPlaying,
+  onPlay,
+  onCommentOpen,
+  onDownload,
+  downloading,
+}: {
+  track: MusicItem;
+  index: number;
+  isPlaying: boolean;
+  onPlay: (id: string) => void;
+  onCommentOpen: (track: MusicItem) => void;
+  onDownload: (e: React.MouseEvent, track: MusicItem) => void;
+  downloading: boolean;
+}) {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const likes = useAppSelector(selectLikesByTrackId(track._id));
+  const commentsState = useAppSelector(selectCommentsByTrackId(track._id));
+
+  const handleLike = useCallback(
+    async (e: React.MouseEvent) => {
+      e.stopPropagation();
+      dispatch(optimisticToggleLike({ trackId: track._id }));
+      try {
+        await dispatch(toggleLike({ trackId: track._id, userId: DEMO_USER_ID })).unwrap();
+      } catch {
+        // Revert optimistic update on failure
+        dispatch(optimisticToggleLike({ trackId: track._id }));
+      }
+    },
+    [dispatch, track._id]
+  );
+
+  return (
+    <motion.div
+      key={track._id}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.05, duration: 0.3 }}
+      onClick={() => {
+        onPlay(track._id);
+        router.push(`/music/${track._id}`);
+      }}
+      className="flex items-center gap-4 px-6 py-4 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900/60 cursor-pointer transition-colors group relative"
+    >
+      {/* Playing indicator bar */}
+      <AnimatePresence>
+        {isPlaying && (
+          <motion.div
+            key="playing-bar"
+            initial={{ scaleY: 0, opacity: 0 }}
+            animate={{ scaleY: 1, opacity: 1 }}
+            exit={{ scaleY: 0, opacity: 0 }}
+            className="absolute left-0 top-0 bottom-0 w-0.5 bg-gray-900 dark:bg-white rounded-r origin-bottom"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Index / Play */}
+      <div className="w-6 shrink-0 flex items-center justify-center">
+        {isPlaying ? (
+          <div className="flex items-end gap-0.5 h-4">
+            {[3, 5, 4, 6, 3].map((h, idx) => (
+              <motion.div
+                key={idx}
+                className="w-0.75 rounded-full bg-gray-900 dark:bg-white"
+                style={{ height: h }}
+                animate={{ height: [h, h * 2.2, h] }}
+                transition={{
+                  duration: 0.6 + idx * 0.1,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: idx * 0.1,
+                }}
+              />
+            ))}
+          </div>
+        ) : (
+          <>
+            <span className="text-[11px] text-gray-300 dark:text-gray-600 font-mono group-hover:hidden">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <Play
+              className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hidden group-hover:block"
+              strokeWidth={2}
+              fill="currentColor"
+            />
+          </>
+        )}
+      </div>
+
+      {/* Cover */}
+      <div className="w-11 h-11 rounded-xl shrink-0 overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center relative">
+        {track.coverImageUrl ? (
+          <img
+            src={track.coverImageUrl}
+            alt={track.title}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <Disc3
+            className="w-5 h-5 text-gray-400 dark:text-gray-500"
+            strokeWidth={1.5}
+          />
+        )}
+        {isPlaying && (
+          <motion.div
+            className="absolute inset-0 bg-gray-900/10 dark:bg-white/10 rounded-xl"
+            animate={{ opacity: [0.4, 0.8, 0.4] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          />
+        )}
+      </div>
+
+      {/* Title & Artist */}
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold truncate leading-none mb-1 text-gray-900 dark:text-white">
+          {track.title}
+        </p>
+        <p className="text-xs text-gray-400 dark:text-gray-500 truncate">
+          {track.artist}
+        </p>
+      </div>
+
+      {/* Album */}
+      <div className="hidden sm:block w-36 shrink-0">
+        <p className="text-xs text-gray-400 dark:text-gray-500 truncate">
+          {track.album}
+        </p>
+      </div>
+
+      {/* Genre tag */}
+      <div className="hidden md:flex shrink-0">
+        <span className="inline-flex items-center text-[11px] font-medium px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 capitalize">
+          {track.genre}
+        </span>
+      </div>
+
+      {/* Year */}
+      <div className="hidden sm:block shrink-0 w-10 text-right">
+        <p className="text-[11px] text-gray-400 dark:text-gray-500">
+          {formatYear(track.releaseDate)}
+        </p>
+      </div>
+
+      {/* Duration */}
+      <div className="flex items-center gap-1 shrink-0 text-xs text-gray-400 dark:text-gray-500">
+        <Clock className="w-3 h-3" strokeWidth={1.8} />
+        {formatDuration(track.duration)}
+      </div>
+
+      {/* Action buttons */}
+      <div
+        className="flex items-center gap-1 shrink-0 ml-1"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Like */}
+        <motion.button
+          whileTap={{ scale: 0.82 }}
+          onClick={handleLike}
+          className={`flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-medium transition-colors ${
+            likes.userLiked
+              ? "text-red-500 bg-red-50 dark:bg-red-950/30"
+              : "text-gray-400 dark:text-gray-500 hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20"
+          }`}
+        >
+          <motion.div
+            animate={likes.userLiked ? { scale: [1, 1.4, 1] } : { scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Heart
+              className={`w-3.5 h-3.5 ${likes.userLiked ? "fill-current" : ""}`}
+              strokeWidth={1.8}
+            />
+          </motion.div>
+          {likes.count ? <span>{likes.count}</span> : null}
+        </motion.button>
+
+        {/* Comment */}
+        <motion.button
+          whileTap={{ scale: 0.82 }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onCommentOpen(track);
+          }}
+          className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-medium text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        >
+          <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.8} />
+          {commentsState.total ? <span>{commentsState.total}</span> : null}
+        </motion.button>
+
+        {/* Download */}
+        {track.musicUrl && (
+          <motion.button
+            whileTap={{ scale: 0.82 }}
+            onClick={(e) => onDownload(e, track)}
+            className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-medium text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            <motion.div
+              animate={downloading ? { y: [0, 3, 0] } : { y: 0 }}
+              transition={{
+                duration: 0.5,
+                repeat: downloading ? Infinity : 0,
+              }}
+            >
+              <Download className="w-3.5 h-3.5" strokeWidth={1.8} />
+            </motion.div>
+          </motion.button>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
 // ── Comment Modal ────────────────────────────────────────────────────────────
 function CommentModal({
   track,
   onClose,
-  onCommentAdded,
 }: {
   track: MusicItem;
   onClose: () => void;
-  onCommentAdded: (musicId: string) => void;
 }) {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loadingList, setLoadingList] = useState(true);
+  const dispatch = useAppDispatch();
+  const commentsState = useAppSelector(selectCommentsByTrackId(track._id));
+  const commentsLoading = useAppSelector(
+    (state) => state.comments.loading
+  );
   const [text, setText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     inputRef.current?.focus();
-    fetch(`${ACTIVITY_URL(track._id)}/comments`)
-      .then((r) => r.json())
-      .then((res) => setComments(Array.isArray(res.data) ? res.data : []))
-      .catch(() => {})
-      .finally(() => setLoadingList(false));
-  }, [track._id]);
+    dispatch(fetchComments({ trackId: track._id }));
+  }, [dispatch, track._id]);
 
   const submit = useCallback(async () => {
     if (!text.trim() || submitting) return;
     setSubmitting(true);
     try {
-      const res = await fetch(`${ACTIVITY_URL(track._id)}/comments`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: DEMO_USER_ID, text: text.trim() }),
-      });
-      const data = await res.json();
-      if (data.success && data.data) {
-        setComments((prev) => [data.data, ...prev]);
-        onCommentAdded(track._id);
-        setText("");
-      }
+      await dispatch(
+        addComment({ trackId: track._id, userId: DEMO_USER_ID, text: text.trim() })
+      ).unwrap();
+      setText("");
     } catch {}
     setSubmitting(false);
-  }, [text, submitting, track._id, onCommentAdded]);
+  }, [dispatch, text, submitting, track._id]);
+
+  const comments = commentsState.data;
 
   return (
     <AnimatePresence>
@@ -180,7 +388,7 @@ function CommentModal({
 
           {/* Comment list */}
           <div className="max-h-64 overflow-y-auto px-5 py-3 space-y-3">
-            {loadingList && (
+            {commentsLoading && comments.length === 0 && (
               <div className="flex justify-center py-6">
                 <Loader2
                   className="w-4 h-4 animate-spin text-gray-400"
@@ -188,7 +396,7 @@ function CommentModal({
                 />
               </div>
             )}
-            {!loadingList && comments.length === 0 && (
+            {!commentsLoading && comments.length === 0 && (
               <p className="text-xs text-gray-400 dark:text-gray-600 text-center py-6">
                 No comments yet. Be the first!
               </p>
@@ -202,17 +410,15 @@ function CommentModal({
               >
                 <div className="w-6 h-6 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center shrink-0 mt-0.5">
                   <span className="text-[9px] font-bold text-white dark:text-gray-900">
-                    {(c.userId?.name ||
-                      c.userId?.email ||
-                      "U")[0].toUpperCase()}
+                    {(c.userId?.[0] ?? "U").toUpperCase()}
                   </span>
                 </div>
                 <div className="flex-1">
                   <p className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 mb-0.5">
-                    {c.userId?.name || c.userId?.email || "Anonymous"}
+                    Anonymous
                   </p>
                   <p className="text-xs text-gray-800 dark:text-gray-200 leading-relaxed">
-                    {c.comment?.text}
+                    {c.text}
                   </p>
                 </div>
               </motion.div>
@@ -251,12 +457,12 @@ function CommentModal({
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function MusicList() {
   const router = useRouter();
-  const [tracks, setTracks] = useState<MusicItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [activityMap, setActivityMap] = useState<Record<string, ActivityMeta>>(
-    {},
-  );
+  const dispatch = useAppDispatch();
+
+  const tracks = useAppSelector(selectAllTracks);
+  const loading = useAppSelector(selectMusicLoading);
+  const error = useAppSelector(selectMusicError);
+
   const [playingId, setPlayingId] = useState<string | null>(null);
 
   // Search + filter state
@@ -274,87 +480,23 @@ export default function MusicList() {
   // Download state
   const [downloading, setDownloading] = useState<Record<string, boolean>>({});
 
-  // ── Fetch tracks ────────────────────────────────────────────────────────────
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
-    fetch(BASE_URL)
-      .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-      })
-      .then((res) => {
-        const data = res?.data ?? [];
-        setTracks(Array.isArray(data) ? data : []);
-      })
-      .catch((e) => setError(e.message ?? "Failed to load music."))
-      .finally(() => setLoading(false));
-  }, []);
+  // Redux selectors for sort (need all likes/comments from store)
+  const likesState = useAppSelector((state) => state.likes.byTrackId);
+  const commentsState = useAppSelector((state) => state.comments.byTrackId);
 
-  // ── Fetch activity meta for all tracks ──────────────────────────────────────
+  // ── Fetch tracks on mount ────────────────────────────────────────────────────
+  useEffect(() => {
+    dispatch(fetchAllMusic());
+  }, [dispatch]);
+
+  // ── Fetch likes + comment counts for all tracks ──────────────────────────────
   useEffect(() => {
     if (!tracks.length) return;
-    tracks.forEach(async (track) => {
-      try {
-        const [likesRes, commentsRes] = await Promise.all([
-          fetch(`${ACTIVITY_URL(track._id)}/likes?userId=${DEMO_USER_ID}`).then(
-            (r) => r.json(),
-          ),
-          fetch(`${ACTIVITY_URL(track._id)}/comments?limit=1`).then((r) =>
-            r.json(),
-          ),
-        ]);
-        setActivityMap((prev) => ({
-          ...prev,
-          [track._id]: {
-            likeCount: likesRes?.data?.count ?? 0,
-            userLiked: likesRes?.data?.userLiked ?? false,
-            commentCount: commentsRes?.total ?? 0,
-          },
-        }));
-      } catch {}
+    tracks.forEach((track) => {
+      dispatch(fetchLikes({ trackId: track._id, userId: DEMO_USER_ID }));
+      dispatch(fetchComments({ trackId: track._id, limit: 1 }));
     });
-  }, [tracks]);
-
-  // ── Like toggle ─────────────────────────────────────────────────────────────
-  const handleLike = useCallback(
-    async (e: React.MouseEvent, musicId: string) => {
-      e.stopPropagation();
-      const prev = activityMap[musicId];
-      // Optimistic update
-      setActivityMap((m) => ({
-        ...m,
-        [musicId]: {
-          ...m[musicId],
-          userLiked: !m[musicId]?.userLiked,
-          likeCount:
-            (m[musicId]?.likeCount ?? 0) + (m[musicId]?.userLiked ? -1 : 1),
-        },
-      }));
-      try {
-        await fetch(`${ACTIVITY_URL(musicId)}/like`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: DEMO_USER_ID }),
-        });
-      } catch {
-        // Revert on failure
-        setActivityMap((m) => ({ ...m, [musicId]: prev }));
-      }
-    },
-    [activityMap],
-  );
-
-  // ── Comment added callback ───────────────────────────────────────────────────
-  const handleCommentAdded = useCallback((musicId: string) => {
-    setActivityMap((m) => ({
-      ...m,
-      [musicId]: {
-        ...m[musicId],
-        commentCount: (m[musicId]?.commentCount ?? 0) + 1,
-      },
-    }));
-  }, []);
+  }, [dispatch, tracks]);
 
   // ── Download ─────────────────────────────────────────────────────────────────
   const handleDownload = useCallback(
@@ -364,17 +506,17 @@ export default function MusicList() {
       setDownloading((d) => ({ ...d, [track._id]: true }));
       try {
         const a = document.createElement("a");
-        a.href = track.musicUrl;
+        a.href = track.musicUrl!;
         a.download = `${track.title} - ${track.artist}.mp3`;
         a.target = "_blank";
         a.click();
       } catch {}
       setTimeout(
         () => setDownloading((d) => ({ ...d, [track._id]: false })),
-        1500,
+        1500
       );
     },
-    [downloading],
+    [downloading]
   );
 
   // ── Close filter on outside click ───────────────────────────────────────────
@@ -388,11 +530,11 @@ export default function MusicList() {
   }, [filterOpen]);
 
   const genres = Array.from(
-    new Set(tracks.map((t) => t.genre).filter(Boolean)),
+    new Set(tracks.map((t) => t.genre).filter(Boolean))
   );
 
   // ── Filter + sort ────────────────────────────────────────────────────────────
-  const filtered = tracks
+  const filtered = (tracks as MusicItem[])
     .filter((t) => {
       const q = search.toLowerCase();
       const matchSearch =
@@ -406,13 +548,12 @@ export default function MusicList() {
     .sort((a, b) => {
       if (sortBy === "mostLiked")
         return (
-          (activityMap[b._id]?.likeCount ?? 0) -
-          (activityMap[a._id]?.likeCount ?? 0)
+          (likesState[b._id]?.count ?? 0) - (likesState[a._id]?.count ?? 0)
         );
       if (sortBy === "mostCommented")
         return (
-          (activityMap[b._id]?.commentCount ?? 0) -
-          (activityMap[a._id]?.commentCount ?? 0)
+          (commentsState[b._id]?.total ?? 0) -
+          (commentsState[a._id]?.total ?? 0)
         );
       return 0;
     });
@@ -445,7 +586,7 @@ export default function MusicList() {
           </div>
 
           {/* Sort dropdown */}
-          <div className="relative" ref={undefined}>
+          <div className="relative">
             <button
               onClick={() =>
                 setSortBy((s) => {
@@ -573,7 +714,7 @@ export default function MusicList() {
                 </p>
               </div>
               <button
-                onClick={() => window.location.reload()}
+                onClick={() => dispatch(fetchAllMusic())}
                 className="inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:opacity-90 transition-opacity"
               >
                 Try Again
@@ -610,209 +751,18 @@ export default function MusicList() {
 
           {!loading && !error && filtered.length > 0 && (
             <div className="max-w-6xl mx-auto">
-              {filtered.map((track, i) => {
-                const meta = activityMap[track._id];
-                const isPlaying = playingId === track._id;
-
-                return (
-                  <motion.div
-                    key={track._id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05, duration: 0.3 }}
-                    onClick={() => {
-                      setPlayingId(track._id);
-                      router.push(`/music/${track._id}`);
-                    }}
-                    className="flex items-center gap-4 px-6 py-4 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900/60 cursor-pointer transition-colors group relative"
-                  >
-                    {/* Playing indicator bar */}
-                    <AnimatePresence>
-                      {isPlaying && (
-                        <motion.div
-                          key="playing-bar"
-                          initial={{ scaleY: 0, opacity: 0 }}
-                          animate={{ scaleY: 1, opacity: 1 }}
-                          exit={{ scaleY: 0, opacity: 0 }}
-                          className="absolute left-0 top-0 bottom-0 w-0.5 bg-gray-900 dark:bg-white rounded-r origin-bottom"
-                        />
-                      )}
-                    </AnimatePresence>
-
-                    {/* Index / Play */}
-                    <div className="w-6 shrink-0 flex items-center justify-center">
-                      {isPlaying ? (
-                        // Animated waveform bars for currently playing track
-                        <div className="flex items-end gap-0.5 h-4">
-                          {[3, 5, 4, 6, 3].map((h, idx) => (
-                            <motion.div
-                              key={idx}
-                              className="w-0.75 rounded-full bg-gray-900 dark:bg-white"
-                              style={{ height: h }}
-                              animate={{ height: [h, h * 2.2, h] }}
-                              transition={{
-                                duration: 0.6 + idx * 0.1,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                                delay: idx * 0.1,
-                              }}
-                            />
-                          ))}
-                        </div>
-                      ) : (
-                        <>
-                          <span className="text-[11px] text-gray-300 dark:text-gray-600 font-mono group-hover:hidden">
-                            {String(i + 1).padStart(2, "0")}
-                          </span>
-                          <Play
-                            className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hidden group-hover:block"
-                            strokeWidth={2}
-                            fill="currentColor"
-                          />
-                        </>
-                      )}
-                    </div>
-
-                    {/* Cover */}
-                    <div className="w-11 h-11 rounded-xl shrink-0 overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center relative">
-                      {track.coverImageUrl ? (
-                        <img
-                          src={track.coverImageUrl}
-                          alt={track.title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <Disc3
-                          className="w-5 h-5 text-gray-400 dark:text-gray-500"
-                          strokeWidth={1.5}
-                        />
-                      )}
-                      {isPlaying && (
-                        <motion.div
-                          className="absolute inset-0 bg-gray-900/10 dark:bg-white/10 rounded-xl"
-                          animate={{ opacity: [0.4, 0.8, 0.4] }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
-                        />
-                      )}
-                    </div>
-
-                    {/* Title & Artist */}
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className={`text-sm font-semibold truncate leading-none mb-1 ${isPlaying ? "text-gray-900 dark:text-white" : "text-gray-900 dark:text-white"}`}
-                      >
-                        {track.title}
-                      </p>
-                      <p className="text-xs text-gray-400 dark:text-gray-500 truncate">
-                        {track.artist}
-                      </p>
-                    </div>
-
-                    {/* Album */}
-                    <div className="hidden sm:block w-36 shrink-0">
-                      <p className="text-xs text-gray-400 dark:text-gray-500 truncate">
-                        {track.album}
-                      </p>
-                    </div>
-
-                    {/* Genre tag */}
-                    <div className="hidden md:flex shrink-0">
-                      <span className="inline-flex items-center text-[11px] font-medium px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 capitalize">
-                        {track.genre}
-                      </span>
-                    </div>
-
-                    {/* Year */}
-                    <div className="hidden sm:block shrink-0 w-10 text-right">
-                      <p className="text-[11px] text-gray-400 dark:text-gray-500">
-                        {formatYear(track.releaseDate)}
-                      </p>
-                    </div>
-
-                    {/* Duration */}
-                    <div className="flex items-center gap-1 shrink-0 text-xs text-gray-400 dark:text-gray-500">
-                      <Clock className="w-3 h-3" strokeWidth={1.8} />
-                      {formatDuration(track.duration)}
-                    </div>
-
-                    {/* Action buttons */}
-                    <div
-                      className="flex items-center gap-1 shrink-0 ml-1"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {/* Like */}
-                      <motion.button
-                        whileTap={{ scale: 0.82 }}
-                        onClick={(e) => handleLike(e, track._id)}
-                        className={`flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-medium transition-colors ${
-                          meta?.userLiked
-                            ? "text-red-500 bg-red-50 dark:bg-red-950/30"
-                            : "text-gray-400 dark:text-gray-500 hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20"
-                        }`}
-                      >
-                        <motion.div
-                          animate={
-                            meta?.userLiked
-                              ? { scale: [1, 1.4, 1] }
-                              : { scale: 1 }
-                          }
-                          transition={{ duration: 0.3 }}
-                        >
-                          <Heart
-                            className={`w-3.5 h-3.5 ${meta?.userLiked ? "fill-current" : ""}`}
-                            strokeWidth={1.8}
-                          />
-                        </motion.div>
-                        {meta?.likeCount ? <span>{meta.likeCount}</span> : null}
-                      </motion.button>
-
-                      {/* Comment */}
-                      <motion.button
-                        whileTap={{ scale: 0.82 }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setCommentTrack(track);
-                        }}
-                        className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-medium text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                      >
-                        <MessageCircle
-                          className="w-3.5 h-3.5"
-                          strokeWidth={1.8}
-                        />
-                        {meta?.commentCount ? (
-                          <span>{meta.commentCount}</span>
-                        ) : null}
-                      </motion.button>
-
-                      {/* Download */}
-                      {track.musicUrl && (
-                        <motion.button
-                          whileTap={{ scale: 0.82 }}
-                          onClick={(e) => handleDownload(e, track)}
-                          className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-medium text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                        >
-                          <motion.div
-                            animate={
-                              downloading[track._id]
-                                ? { y: [0, 3, 0] }
-                                : { y: 0 }
-                            }
-                            transition={{
-                              duration: 0.5,
-                              repeat: downloading[track._id] ? Infinity : 0,
-                            }}
-                          >
-                            <Download
-                              className="w-3.5 h-3.5"
-                              strokeWidth={1.8}
-                            />
-                          </motion.div>
-                        </motion.button>
-                      )}
-                    </div>
-                  </motion.div>
-                );
-              })}
+              {filtered.map((track, i) => (
+                <TrackActivityRow
+                  key={track._id}
+                  track={track}
+                  index={i}
+                  isPlaying={playingId === track._id}
+                  onPlay={setPlayingId}
+                  onCommentOpen={setCommentTrack}
+                  onDownload={handleDownload}
+                  downloading={!!downloading[track._id]}
+                />
+              ))}
             </div>
           )}
         </div>
@@ -823,7 +773,6 @@ export default function MusicList() {
         <CommentModal
           track={commentTrack}
           onClose={() => setCommentTrack(null)}
-          onCommentAdded={handleCommentAdded}
         />
       )}
     </>

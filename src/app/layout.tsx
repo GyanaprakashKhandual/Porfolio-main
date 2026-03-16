@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/app/components/Nav.bar";
 import { ThemeProvider } from "@/app/context/Theme.context";
+import StoreProvider from "./context/Store.context";
 
 
 export const metadata: Metadata = {
@@ -36,7 +37,9 @@ export default function RootLayout({
       <body className="hide-scrollbar">
           <ThemeProvider>
             <Navbar />
-            {children}
+            <StoreProvider>
+              {children}
+            </StoreProvider>
           </ThemeProvider>
   
       </body>
