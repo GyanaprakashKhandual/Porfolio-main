@@ -1,18 +1,17 @@
-import React from 'react'
-import ContactPage from './pages/Contact.page'
-
+import ContactPage from "./pages/Contact.page";
 
 export const metadata = {
-    title: "Contact",
-    description: "Get in touch with me! Whether you have a question, want to collaborate, or just want to say hi, I'm always open to connecting. Fill out the contact form or find my social media links here.",
-}
+  title: "Contact",
+  description:
+    "Get in touch with me! Whether you have a question, want to collaborate, or just want to say hi, I'm always open to connecting. Fill out the contact form or find my social media links here.",
+};
 
 function page() {
   return (
     <div>
-      <ContactPage/>
+      <ContactPage />
     </div>
-  )
+  );
 }
 
-export default page
+export default page;

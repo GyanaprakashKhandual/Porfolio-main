@@ -1,10 +1,9 @@
-/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { api } from "@/configs/env.config";
 import {
   Mail,
   Phone,
@@ -21,8 +20,14 @@ import {
   FileText,
   AtSign,
 } from "lucide-react";
-
-const CONTACT_API = api.contact;
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
+import { sendContactMessage } from "../../../lib/features/contact/contact.slice";
+import {
+  selectContactLoading,
+  selectContactSuccess,
+  selectContactError,
+} from "../../../lib/features/contact/contact.selector";
+import { clearContactState } from "../../../lib/features/contact/contact.slice";
 
 interface FormData {
   name: string;
@@ -80,7 +85,6 @@ const INFO_ITEMS = [
   },
 ];
 
-// ── Field input component ──────────────────────────────────────────────────────
 function Field({
   label,
   icon,
@@ -134,6 +138,11 @@ const inputCls = (hasError: boolean) => `
 `;
 
 export default function ContactPage() {
+  const dispatch = useAppDispatch();
+  const loading = useAppSelector(selectContactLoading);
+  const success = useAppSelector(selectContactSuccess);
+  const apiError = useAppSelector(selectContactError);
+
   const [form, setForm] = useState<FormData>({
     name: "",
     email: "",
@@ -141,18 +150,23 @@ export default function ContactPage() {
     message: "",
   });
   const [errors, setErrors] = useState<FieldErrors>({});
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "success" | "error"
-  >("idle");
-  const [apiError, setApiError] = useState("");
+
+  const status = loading
+    ? "loading"
+    : success
+      ? "success"
+      : apiError
+        ? "error"
+        : "idle";
 
   const set = useCallback(
     (field: keyof FormData) =>
       (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setForm((prev) => ({ ...prev, [field]: e.target.value }));
         setErrors((prev) => ({ ...prev, [field]: undefined }));
+        if (success || apiError) dispatch(clearContactState());
       },
-    [],
+    [dispatch, success, apiError],
   );
 
   const validate = (): boolean => {
@@ -168,44 +182,25 @@ export default function ContactPage() {
   };
 
   const handleSubmit = useCallback(async () => {
-    if (!validate() || status === "loading") return;
-    setStatus("loading");
-    setApiError("");
-    try {
-      const res = await fetch(CONTACT_API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setStatus("success");
-        setForm({ name: "", email: "", subject: "", message: "" });
-      } else {
-        if (data.errors) setErrors(data.errors);
-        setApiError(data.message ?? "Something went wrong.");
-        setStatus("error");
-      }
-    } catch {
-      setApiError("Network error — please try again.");
-      setStatus("error");
-    }
-  }, [form, status]);
+    if (!validate() || loading) return;
+    const result = await dispatch(sendContactMessage(form))
+      .unwrap()
+      .catch(() => null);
+    if (result !== null)
+      setForm({ name: "", email: "", subject: "", message: "" });
+  }, [dispatch, form, loading]);
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-white dark:bg-gray-950">
-      {/* ── Body ── */}
       <div className="flex-1 overflow-auto">
         <div className="max-w-5xl mx-auto px-6 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            {/* ── Left panel: info + socials ── */}
             <motion.div
               initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4 }}
               className="lg:col-span-2 flex flex-col gap-4"
             >
-              {/* Profile card */}
               <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-12 h-12 rounded-xl overflow-hidden">
@@ -225,7 +220,6 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                {/* Info items */}
                 <div className="space-y-3">
                   {INFO_ITEMS.map((item) => (
                     <div key={item.label} className="flex items-start gap-3">
@@ -256,7 +250,6 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* Social links */}
               <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5">
                 <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400 dark:text-gray-500 mb-4">
                   Find me online
@@ -294,7 +287,6 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* Availability badge */}
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -316,7 +308,6 @@ export default function ContactPage() {
               </motion.div>
             </motion.div>
 
-            {/* ── Right panel: contact form ── */}
             <motion.div
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
@@ -324,7 +315,6 @@ export default function ContactPage() {
               className="lg:col-span-3"
             >
               <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6">
-                {/* Form header */}
                 <div className="mb-6">
                   <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight mb-1">
                     Send a message
@@ -335,7 +325,6 @@ export default function ContactPage() {
                   </p>
                 </div>
 
-                {/* Success state */}
                 <AnimatePresence>
                   {status === "success" && (
                     <motion.div
@@ -378,9 +367,7 @@ export default function ContactPage() {
                   )}
                 </AnimatePresence>
 
-                {/* Form fields */}
                 <div className="space-y-4">
-                  {/* Name + Email row */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Field
                       label="Name"
@@ -395,7 +382,6 @@ export default function ContactPage() {
                         className={inputCls(!!errors.name)}
                       />
                     </Field>
-
                     <Field
                       label="Email"
                       icon={<AtSign className="w-3 h-3" strokeWidth={2} />}
@@ -411,7 +397,6 @@ export default function ContactPage() {
                     </Field>
                   </div>
 
-                  {/* Subject */}
                   <Field
                     label="Subject"
                     icon={<FileText className="w-3 h-3" strokeWidth={2} />}
@@ -426,7 +411,6 @@ export default function ContactPage() {
                     />
                   </Field>
 
-                  {/* Message */}
                   <Field
                     label="Message"
                     icon={<MessageSquare className="w-3 h-3" strokeWidth={2} />}
@@ -444,11 +428,10 @@ export default function ContactPage() {
                     </p>
                   </Field>
 
-                  {/* Submit */}
                   <motion.button
                     whileTap={{ scale: 0.98 }}
                     onClick={handleSubmit}
-                    disabled={status === "loading"}
+                    disabled={loading}
                     className="
                       w-full flex items-center justify-center gap-2
                       py-3 px-6 rounded-xl
@@ -456,8 +439,7 @@ export default function ContactPage() {
                       text-white dark:text-gray-900
                       text-sm font-semibold
                       hover:opacity-90 disabled:opacity-60
-                      transition-opacity
-                      shadow-sm
+                      transition-opacity shadow-sm
                     "
                   >
                     <AnimatePresence mode="wait" initial={false}>
