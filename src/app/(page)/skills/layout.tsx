@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, createContext, useContext } from "react";
-import SkillsSidebar from "@/app/components/Skill.sidebar";
+import SkillsSidebar from "./components/Skill.sidebar";
 import { ISkill } from "@/app/lib/types";
 
 interface SkillsContextType {
