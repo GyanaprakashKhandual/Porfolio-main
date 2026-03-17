@@ -1,12 +1,12 @@
 "use client";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Heart } from "lucide-react";
-import { SectionStrokes } from "./Strokes";
+import { BackgroundStrokes } from "./Strokes";
 
 const socials = [
   {
     name: "YouTube",
-    url: "https://youtube.com",
+    url: "https://youtube.com/@GyanaprakashKhandual",
     color: "hover:text-red-500 hover:border-red-500/30 hover:bg-red-500/8",
     icon: (
       <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
@@ -16,7 +16,7 @@ const socials = [
   },
   {
     name: "LinkedIn",
-    url: "https://www.linkedin.com/in/gyana-prakash-khandual-79b205332/",
+    url: "https://www.linkedin.com/in/gyanaprakashkhandual",
     color: "hover:text-blue-500 hover:border-blue-500/30 hover:bg-blue-500/8",
     icon: (
       <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
@@ -26,7 +26,7 @@ const socials = [
   },
   {
     name: "Instagram",
-    url: "https://instagram.com",
+    url: "https://instagram.com/GyanaprakashKhandual",
     color: "hover:text-pink-500 hover:border-pink-500/30 hover:bg-pink-500/8",
     icon: (
       <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
@@ -36,7 +36,7 @@ const socials = [
   },
   {
     name: "Facebook",
-    url: "https://facebook.com",
+    url: "https://facebook.com/GyanaprakashKhandual",
     color: "hover:text-blue-600 hover:border-blue-600/30 hover:bg-blue-600/8",
     icon: (
       <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
@@ -49,7 +49,7 @@ const socials = [
 export default function Footer() {
   return (
     <footer className="relative px-6 lg:px-12 pt-20 pb-10 bg-white dark:bg-[#0d0d0f] border-t border-black/6 dark:border-white/6">
-      <SectionStrokes variant="b" />
+      <BackgroundStrokes />
       <div className="relative max-w-7xl mx-auto">
         <div className="grid gap-12 lg:grid-cols-12 mb-16">
           <div className="lg:col-span-5 space-y-8">
@@ -75,7 +75,6 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   title={s.name}
-                  whileHover={{ scale: 1.12, y: -3 }}
                   whileTap={{ scale: 0.92 }}
                   className={`group relative flex items-center justify-center w-11 h-11 rounded-2xl bg-black/4 dark:bg-white/4 border border-black/8 dark:border-white/8 text-black/40 dark:text-white/40 ${s.color} transition-all duration-200 shadow-sm hover:shadow-md`}
                 >
@@ -99,8 +98,8 @@ export default function Footer() {
                     href={`https://gyanprakash.vercel.app/${link.toLowerCase()}`}
                     className="group inline-flex items-center gap-1.5 text-sm text-black/55 dark:text-white/55 hover:text-black dark:hover:text-white transition-colors duration-150 font-medium"
                   >
-                    <span className="w-0 group-hover:w-2 h-px bg-black dark:bg-white transition-all duration-200 rounded-full" />
                     {link}
+                    <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </a>
                 </li>
               ))}
@@ -119,8 +118,8 @@ export default function Footer() {
                       href="#"
                       className="group inline-flex items-center gap-1.5 text-sm text-black/55 dark:text-white/55 hover:text-black dark:hover:text-white transition-colors duration-150 font-medium"
                     >
-                      <span className="w-0 group-hover:w-2 h-px bg-black dark:bg-white transition-all duration-200 rounded-full" />
                       {p}
+                      <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </a>
                   </li>
                 ),
@@ -174,7 +173,7 @@ export default function Footer() {
           <div className="flex items-center gap-1 text-xs text-black/35 dark:text-white/35">
             <span>Built with</span>
             <span>Lots of Love for Music</span>
-            <Heart className="w-3 h-3 text-red-500 fill-red-500" />
+            <Heart className="w-3 h-3 ml-1 text-black fill-black" />
           </div>
           <div className="flex gap-5 text-xs text-black/35 dark:text-white/35">
             <a

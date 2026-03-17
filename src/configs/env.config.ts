@@ -36,5 +36,10 @@ export const {
   api,
   isDevelopment,
   isProduction,
-  getMusicActivityUrl,
 } = envConfig;
+
+// Export function separately to avoid serialization issues during static generation
+export const getMusicActivityUrl = (musicId: string) => {
+  const config = getEnvironmentConfig();
+  return config.getMusicActivityUrl(musicId);
+};

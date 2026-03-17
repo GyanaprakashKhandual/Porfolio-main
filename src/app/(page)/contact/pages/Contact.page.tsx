@@ -161,7 +161,7 @@ function ToastAlert({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -16, scale: 0.96 }}
       transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="fixed top-5 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-3 px-4 py-3 rounded-2xl shadow-lg border backdrop-blur-sm min-w-[320px] max-w-[480px] bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800"
+      className="fixed top-5 left-1/2 -translate-x-1/2 z-9999 flex items-center gap-3 px-4 py-3 rounded-2xl shadow-lg border backdrop-blur-sm min-w-[320px] max-w-120 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800"
     >
       <div
         className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
@@ -193,7 +193,7 @@ function ToastAlert({
       </div>
 
       {/* Auto-drain progress bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full overflow-hidden">
+      <div className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full overflow-hidden">
         <motion.div
           initial={{ width: "100%" }}
           animate={{ width: "0%" }}
@@ -266,11 +266,8 @@ export default function ContactPage() {
 
   const handleSubmit = useCallback(async () => {
     if (!validate() || loading) return;
-    const result = await dispatch(sendContactMessage(form))
-      .unwrap()
-      .catch(() => null);
-    if (result !== null)
-      setForm({ name: "", email: "", subject: "", message: "" });
+    await dispatch(sendContactMessage(form));
+    setForm({ name: "", email: "", subject: "", message: "" });
   }, [dispatch, form, loading]);
 
   return (

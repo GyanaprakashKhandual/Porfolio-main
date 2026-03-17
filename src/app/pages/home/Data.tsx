@@ -80,11 +80,20 @@ export const projects = [
     description:
       "A next-generation bug tracking application integrated with Anthropic AI. Features intelligent auto bug lock based on real-time test results, automated reports, and smart defect analysis.",
     users: "400+",
-    tech: ["Express.js", "Node.js", "MongoDB", "React.js", "Anthropic API", "JavaScript"],
+    tech: [
+      "Express.js",
+      "Node.js",
+      "MongoDB",
+      "React.js",
+      "Anthropic API",
+      "JavaScript",
+    ],
     links: {
       app: "https://caffetest.vercel.app",
-      frontend: "https://github.com/gyanaprakashkhandual/bug-tracking-app-frontned",
-      backend: "https://github.com/gyanaprakashkhandual/bug-tracking-app-backend",
+      frontend:
+        "https://github.com/gyanaprakashkhandual/bug-tracking-app-frontned",
+      backend:
+        "https://github.com/gyanaprakashkhandual/bug-tracking-app-backend",
     },
     gradient: "from-blue-500/5 to-indigo-500/5",
   },
@@ -94,7 +103,14 @@ export const projects = [
     description:
       "Automatic API testing powered by Anthropic. Intelligently scans your entire codebase, maps all endpoints, and generates comprehensive test suites — completely autonomously.",
     users: "200+",
-    tech: ["Express.js", "Node.js", "MongoDB", "Next.js", "Anthropic API", "TypeScript"],
+    tech: [
+      "Express.js",
+      "Node.js",
+      "MongoDB",
+      "Next.js",
+      "Anthropic API",
+      "TypeScript",
+    ],
     links: {
       app: "https://fectch.metronique.vercel.app",
       frontend: "https://github.com/gyanaprakashkhandual/fetch-frontend",

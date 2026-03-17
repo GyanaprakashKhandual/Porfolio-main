@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sun, Moon, Menu, X } from "lucide-react";
 import { FaCoffee } from "react-icons/fa";
 import { useTheme } from "../context/Theme.context";
-import { Tooltip } from "./ui/Tooltip.ui";
+
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface NavLink {

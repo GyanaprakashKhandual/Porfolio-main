@@ -52,6 +52,7 @@ interface Project {
   projectContributors: Contributor[];
 }
 
+
 // ─── Section Card ─────────────────────────────────────────────────────────────
 function Section({
   icon,

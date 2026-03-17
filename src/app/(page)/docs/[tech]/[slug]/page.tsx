@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import docRegistry from "@/app/utils/doc.registry";
 import fileMap from "@/app/script/doc.file.map";
@@ -7,24 +7,19 @@ import sidebarItems from "@/app/script/doc.sidebar.item";
 import { flattenSidebarItems } from "@/app/utils/slug.util";
 import DocPageClient from "./Doc.page.client";
 
+export const dynamic = "force-static";
+export const dynamicParams = true;
+
 interface DocSlugPageProps {
   params: { tech: string; slug: string };
 }
 
 export async function generateStaticParams() {
-  const params: { tech: string; slug: string }[] = [];
-  for (const tech of docRegistry) {
-    const sections = sidebarItems[tech.slug] ?? [];
-    const flat = flattenSidebarItems(sections);
-    for (const item of flat) {
-      params.push({ tech: tech.slug, slug: item.slug });
-    }
-  }
-  return params;
+  return [];
 }
 
 export default async function DocSlugPage({ params }: DocSlugPageProps) {
-  const { tech: techSlug, slug } = await params;
+  const { tech: techSlug, slug } = params;
   const tech = docRegistry.find((d) => d.slug === techSlug);
   if (!tech) notFound();
 
@@ -37,7 +32,7 @@ export default async function DocSlugPage({ params }: DocSlugPageProps) {
   let content = "";
   try {
     const fullPath = path.join(process.cwd(), "src/app", entry.filePath);
-    content = fs.readFileSync(fullPath, "utf-8");
+    content = await fs.readFile(fullPath, "utf-8");
   } catch {
     content = `# ${slug}\n\nContent for this page is not yet available.`;
   }
