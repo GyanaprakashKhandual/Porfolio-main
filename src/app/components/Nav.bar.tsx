@@ -74,7 +74,7 @@ export default function Navbar() {
         initial={{ y: -64, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className={`
+        className={`select-none
           fixed top-0 left-0 right-0 z-50
           bg-white/90 dark:bg-neutral-950/90
           backdrop-blur-md

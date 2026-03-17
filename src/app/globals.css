@@ -15,18 +15,23 @@ body {
   display: none;
 }
 ::-webkit-scrollbar-thumb {
-  background: #6f6a6a;
+  background: #0a0a0a;
 }
 ::-webkit-scrollbar-track {
   background-color: #ffffff;
 }
-.main-container {
-  height: calc(100vh - 56px);
-  overflow-y: auto;
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #f5f5f5;
+}
+.dark ::-webkit-scrollbar-track {
+  background-color: #000000;
 }
 
 button {
   cursor: pointer;
 }
 
-
+.select-none {
+  user-select: none;
+}

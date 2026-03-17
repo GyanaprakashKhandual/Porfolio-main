@@ -44,7 +44,7 @@ export default function Testimonials() {
               </p>
               <div className="flex items-center gap-4">
                 <div
-                  className={`w-11 h-11 rounded-full bg-linear-to-br ${t.color} flex items-center justify-center text-white text-sm font-black shadow-md`}
+                  className={`w-11 h-11 rounded-full bg-linear-to-br bg-black flex items-center justify-center text-white text-sm font-black`}
                 >
                   {t.avatar}
                 </div>

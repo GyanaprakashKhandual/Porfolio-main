@@ -9,7 +9,7 @@ import {
 interface TooltipProps {
   content?: string;
   children: React.ReactNode;
-  position?: string;
+  position?: "top" | "bottom" | "left" | "right";
   delay?: number;
   maxWidth?: number;
   className?: string;
@@ -23,11 +23,10 @@ export const Tooltip = ({
   maxWidth = 200,
   className = "",
 }: TooltipProps) => {
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-  const [calculatedPosition, setCalculatedPosition] = useState<string>(position);
+  const [isVisible, setIsVisible] = useState(false);
+  const [calculatedPosition, setCalculatedPosition] = useState(position);
   const triggerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     if (isVisible && triggerRef.current && tooltipRef.current) {
       const trigger = triggerRef.current.getBoundingClientRect();
@@ -36,13 +35,11 @@ export const Tooltip = ({
       setCalculatedPosition(newPosition);
     }
   }, [isVisible, position]);
-
   const animationVariants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { opacity: 1, scale: 1 },
     exit: { opacity: 0, scale: 0.8 },
   };
-
   return (
     <div className={`relative inline-block ${className}`}>
       <div
@@ -61,9 +58,8 @@ export const Tooltip = ({
             initial="hidden"
             animate="visible"
             exit="exit"
-            variants={animationVariants}
             className={`
-              absolute z-9999 bg-gray-950 text-white text-[10px] leading-4.5 px-1.5 py-1.5 rounded shadow-[0_2px_8px_rgba(0,0,0,0.26)] whitespace-nowrap font-semi-bold pointer-events-none
+              absolute z-9999 bg-inverse text-inverse text-[13px] leading-4.5 px-2.5 py-1.5 rounded shadow-[0_2px_8px_rgba(0,0,0,0.26)] whitespace-nowrap font-semi-bold pointer-events-none
               ${positionClasses[calculatedPosition] || positionClasses.top}
             `}
             style={{ maxWidth: `${maxWidth}px` }}

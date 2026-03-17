@@ -90,7 +90,7 @@ export default function Hero() {
                 <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </motion.a>
               <motion.a
-                href="https://github.com/GyanaprakashKhandual"
+                href="https://github.com/gyanaprakashkhandual"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.02, y: -2 }}
@@ -148,7 +148,7 @@ export default function Hero() {
                   alt="Gyana Prakash Khandual"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
               </div>
             </div>
           </motion.div>

@@ -12,7 +12,6 @@ export const positionClasses: Record<string, string> = {
   'right-top': 'left-full ml-2 bottom-0',
   'right-bottom': 'left-full ml-2 top-0',
 };
-
 export const calculatePosition = (
   triggerRect: DOMRect,
   tooltipRect: DOMRect,
@@ -24,9 +23,7 @@ export const calculatePosition = (
   const spaceAbove = triggerRect.top;
   const spaceRight = viewportWidth - triggerRect.right;
   const spaceLeft = triggerRect.left;
-
   let newPosition = position;
-
   if (position === 'top' || position === 'top-left' || position === 'top-right') {
     if (spaceAbove < 60 && spaceBelow > spaceAbove) {
       newPosition =
@@ -50,7 +47,6 @@ export const calculatePosition = (
             : 'top-right';
     }
   }
-
   if (newPosition.includes('left')) {
     if (spaceLeft < tooltipRect.width && spaceRight > spaceLeft) {
       newPosition = newPosition.replace('left', 'right');
@@ -66,6 +62,5 @@ export const calculatePosition = (
       newPosition = newPosition + '-right';
     }
   }
-
   return newPosition;
 };

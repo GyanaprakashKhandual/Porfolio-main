@@ -13,49 +13,53 @@ export const skills = [
   {
     name: "TypeScript",
     category: "Language",
-    color: "from-blue-500/10 to-blue-600/5",
+    color: "from-[#3178C6]/10 to-black/5", // TypeScript blue
   },
   {
     name: "React.js",
     category: "Frontend",
-    color: "from-cyan-500/10 to-cyan-600/5",
+    color: "from-[#61DAFB]/10 to-black/5", // React cyan
   },
   {
     name: "Express.js",
     category: "Backend",
-    color: "from-gray-500/10 to-gray-600/5",
+    color: "from-[#000000]/10 to-[#353535]/5", // Express black/dark
   },
   {
     name: "MongoDB",
     category: "Database",
-    color: "from-green-500/10 to-green-600/5",
+    color: "from-[#47A248]/10 to-black/5", // MongoDB green
   },
   {
     name: "Next.js",
     category: "Full Stack",
-    color: "from-slate-500/10 to-slate-600/5",
+    color: "from-[#000000]/10 to-[#111111]/5", // Next.js black
   },
   {
     name: "Selenium",
     category: "Testing",
-    color: "from-emerald-500/10 to-emerald-600/5",
+    color: "from-[#43B02A]/10 to-black/5", // Selenium green
   },
   {
     name: "REST Assured",
     category: "API Testing",
-    color: "from-orange-500/10 to-orange-600/5",
+    color: "from-[#4B8BBE]/10 to-black/5", // REST Assured blue
   },
   {
     name: "Grafana",
     category: "Monitoring",
-    color: "from-amber-500/10 to-amber-600/5",
+    color: "from-[#F46800]/10 to-black/5", // Grafana orange
   },
   {
     name: "Metasploit",
     category: "Security",
-    color: "from-red-500/10 to-red-600/5",
+    color: "from-[#E31F26]/10 to-black/5", // Metasploit red
   },
-  { name: "Docker", category: "DevOps", color: "from-sky-500/10 to-sky-600/5" },
+  {
+    name: "Docker",
+    category: "DevOps",
+    color: "from-[#2496ED]/10 to-black/5", // Docker blue
+  },
 ];
 
 export const stats = [
@@ -64,9 +68,9 @@ export const stats = [
   { label: "API Tests", value: "7+", icon: Terminal, accent: "#f59e0b" },
   { label: "Perf. Tests", value: "12+", icon: Gauge, accent: "#8b5cf6" },
   { label: "Custom Reports", value: "130+", icon: Award, accent: "#ec4899" },
-  { label: "Lines of Code", value: "700K+", icon: Code2, accent: "#06b6d4" },
-  { label: "Devices Secured", value: "16+", icon: Shield, accent: "#ef4444" },
-  { label: "GitHub Repos", value: "124+", icon: Github, accent: "#6366f1" },
+  { label: "Lines of Code", value: "11700K+", icon: Code2, accent: "#06b6d4" },
+  { label: "Devices Secured", value: "26+", icon: Shield, accent: "#ef4444" },
+  { label: "GitHub Repos", value: "150+", icon: Github, accent: "#6366f1" },
 ];
 
 export const projects = [
@@ -76,11 +80,11 @@ export const projects = [
     description:
       "A next-generation bug tracking application integrated with Anthropic AI. Features intelligent auto bug lock based on real-time test results, automated reports, and smart defect analysis.",
     users: "400+",
-    tech: ["Next.js", "MongoDB", "Anthropic API"],
+    tech: ["Express.js", "Node.js", "MongoDB", "React.js", "Anthropic API", "JavaScript"],
     links: {
       app: "https://caffetest.vercel.app",
-      frontend: "https://github.com/GyanaprakashKhandual/Caffetest-app",
-      backend: "https://github.com/GyanaprakashKhandual/Caffetest-web",
+      frontend: "https://github.com/gyanaprakashkhandual/bug-tracking-app-frontned",
+      backend: "https://github.com/gyanaprakashkhandual/bug-tracking-app-backend",
     },
     gradient: "from-blue-500/5 to-indigo-500/5",
   },
@@ -90,11 +94,11 @@ export const projects = [
     description:
       "Automatic API testing powered by Anthropic. Intelligently scans your entire codebase, maps all endpoints, and generates comprehensive test suites — completely autonomously.",
     users: "200+",
-    tech: ["React.js", "Express.js", "Anthropic API"],
+    tech: ["Express.js", "Node.js", "MongoDB", "Next.js", "Anthropic API", "TypeScript"],
     links: {
-      app: "https://fetch.metronique.vercel.app",
-      frontend: "https://github.com/GyanaprakashKhandual/Metronique-Fetch-App",
-      backend: "https://github.com/GyanaprakashKhandual/Metronique-Fetch-Web",
+      app: "https://fectch.metronique.vercel.app",
+      frontend: "https://github.com/gyanaprakashkhandual/fetch-frontend",
+      backend: "https://github.com/gyanaprakashkhandual/fetch-backend",
     },
     gradient: "from-emerald-500/5 to-teal-500/5",
   },
