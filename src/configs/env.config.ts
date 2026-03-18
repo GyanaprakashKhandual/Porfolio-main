@@ -2,7 +2,7 @@
 // Dynamically switches between development, staging, and production environments
 
 const getEnvironmentConfig = () => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://gyanaprakashkhandula.onrender.com";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://gyanaprakashkhandual.vercel.app";
   const nodeEnv = process.env.NODE_ENV || "development";
 
   return {
@@ -36,10 +36,5 @@ export const {
   api,
   isDevelopment,
   isProduction,
+  getMusicActivityUrl,
 } = envConfig;
-
-// Export function separately to avoid serialization issues during static generation
-export const getMusicActivityUrl = (musicId: string) => {
-  const config = getEnvironmentConfig();
-  return config.getMusicActivityUrl(musicId);
-};
