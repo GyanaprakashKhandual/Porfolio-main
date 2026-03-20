@@ -1,6 +1,7 @@
 import { JSX } from "react";
 import { GrReactjs } from "react-icons/gr";
 import { SiSelenium } from "react-icons/si";
+import { SiGit } from "react-icons/si";
 export interface DocTech {
   slug: string;
   label: string;
@@ -27,6 +28,14 @@ const docRegistry: DocTech[] = [
     color: "text-green-400",
     totalDocs: 50,
   },
+  {
+    slug: "git",
+    label: "Git",
+    description: "Version control, branching, merging & workflows",
+    icon: <SiGit size={24} className="text-orange-400" />,
+    color: "text-orange-400",
+    totalDocs: 30,
+  }
 ];
 
 export default docRegistry;

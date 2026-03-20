@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import MarkdownRenderer from "@/app/components/markdown/Markdown.render";
+import Toolbar from "../../components/Toolbar";
 
 
 interface DocPageClientProps {
@@ -25,6 +26,9 @@ export default function DocPageClient({ content }: DocPageClientProps) {
         transition={{ duration: 0.25, ease: "easeOut" }}
         className="flex flex-col min-h-full"
       >
+        <div>
+          <Toolbar/>
+        </div>
         {/* Markdown content */}
         <div className="flex-1 max-w-6xl mx-auto px-6 py-8 pr-72">
           <MarkdownRenderer content={content} />

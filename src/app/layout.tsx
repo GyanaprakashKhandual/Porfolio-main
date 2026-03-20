@@ -4,7 +4,7 @@ import Navbar from "@/app/components/Nav.bar";
 import { ThemeProvider } from "@/app/context/Theme.context";
 import StoreProvider from "./context/Store.context";
 import { ContentProvider } from "./context/Content.context";
-
+import { ActionMenuProvider } from "./context/Action.menu.context";
 export const metadata: Metadata = {
   title: "Portfolio - Gyana Prakash Khandual",
   description:
@@ -36,12 +36,14 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <ActionMenuProvider>
         <ThemeProvider>
           <ContentProvider>
             <Navbar />
             <StoreProvider>{children}</StoreProvider>
           </ContentProvider>
         </ThemeProvider>
+        </ActionMenuProvider>
       </body>
     </html>
   );
