@@ -17,7 +17,6 @@ export async function generateStaticParams() {
     const sections = sidebarItems[tech.slug] ?? [];
     const flat = flattenSidebarItems(sections);
     for (const item of flat) {
-      
       params.push({ tech: tech.slug, slug: item.slug });
     }
   }

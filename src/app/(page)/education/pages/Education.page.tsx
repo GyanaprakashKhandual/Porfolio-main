@@ -134,7 +134,7 @@ export default function EducationPage() {
   }, [dispatch]);
 
   return (
-    <div className="main-scrollbar flex-1 flex flex-col h-[calc(100vh-56px)] bg-white overflow-hidden dark:bg-gray-950">
+    <div className="select-none main-scrollbar flex-1 flex flex-col h-[calc(100vh-56px)] bg-white overflow-hidden dark:bg-gray-950">
       <div className="flex-1 overflow-auto">
         <div className="max-w-3xl mx-auto px-6 py-8">
           {loading && (
@@ -215,7 +215,7 @@ export default function EducationPage() {
                   </div>
                   <div>
                     <p className="text-xs font-bold text-gray-900 dark:text-white">
-                      2021 – 2025
+                      2021 – 2027
                     </p>
                     <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-wide">
                       Timeline
@@ -274,6 +274,7 @@ export default function EducationPage() {
                               <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                                 {edu.institution}
                               </p>
+                    
                             </div>
                           </div>
 
@@ -286,7 +287,21 @@ export default function EducationPage() {
                                 strokeWidth={2}
                               />
                               {edu.stream}
+                             
+
                             </span>
+                            <div className="gap-2 flex items-center">
+                              
+                                {edu.skills?.map((s: string) => (
+                                  <span
+                                    key={s}
+                                    className="inline-flex items-center gap-3 text-[11px] font-medium px-2.5 py-1 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
+                                  >
+                                    {s}
+                                  </span>
+                                ))}
+                              
+                             </div>
                           </div>
 
                           <div className="pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between flex-wrap gap-2">

@@ -117,6 +117,7 @@ export interface IEducation {
   startDate?: string;
   endDate?: string;
   description?: string;
+  skills?: string[];
 }
 
 // ── Projects ──────────────────────────────────────────────────────────────────

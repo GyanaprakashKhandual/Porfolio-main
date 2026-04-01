@@ -164,9 +164,12 @@ export default function ProjectDetailPage() {
       return;
     }
 
+    const encodedSlug = encodeURIComponent(slug);
+    const fetchUrl = `${BASE_URL}/${encodedSlug}`;
+    
     console.log(
       "[ProjectDetailPage] Starting fetch for:",
-      `${BASE_URL}/${slug}`,
+      fetchUrl,
     );
 
     setLoading(true);
@@ -178,7 +181,7 @@ export default function ProjectDetailPage() {
     setProject(null);
     console.log("[ProjectDetailPage] Project reset");
 
-    fetch(`${BASE_URL}/${slug}`)
+    fetch(fetchUrl)
       .then((r) => {
         console.log("[ProjectDetailPage] Raw response object:", r);
         console.log(
