@@ -1,4 +1,4 @@
-import ExperiencePage from "./pages/Experience.page";
+import ExperiencePage from "./Experience.page";
 
 export const metadata = {
   title: "My Work - Experience",

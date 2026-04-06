@@ -1,4 +1,4 @@
-import EducationPage from "./pages/Education.page";
+import EducationPage from "./Education.page";
 
 export const metadata = {
   title: "My Education",
