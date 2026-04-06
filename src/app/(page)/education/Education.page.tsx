@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   GraduationCap,
@@ -11,17 +10,20 @@ import {
   Award,
   AlertTriangle,
 } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
-import { fetchAllEducation } from "@/app/lib/features/education/education.slice";
-import {
-  selectAllEducation,
-  selectEducationLoading,
-  selectEducationError,
-} from "@/app/lib/features/education/education.selector";
 
 interface Duration {
   start: string | null;
   end: string | null;
+}
+
+interface Education {
+  title: string;
+  institution: string;
+  stream: string;
+  grade: string;
+  location: string;
+  duration: Duration;
+  skills?: string[];
 }
 
 const STREAM_COLORS: Record<
@@ -124,14 +126,25 @@ function SkeletonCard() {
 }
 
 export default function EducationPage() {
-  const dispatch = useAppDispatch();
-  const data = useAppSelector(selectAllEducation);
-  const loading = useAppSelector(selectEducationLoading);
-  const error = useAppSelector(selectEducationError);
+  const [data, setData] = useState<Education[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    dispatch(fetchAllEducation());
-  }, [dispatch]);
+    fetch("../../../../public/Experience.data.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch education data.");
+        return res.json();
+      })
+      .then((json) => {
+        setData(json.education ?? []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message || "Something went wrong.");
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="select-none main-scrollbar flex-1 flex flex-col h-[calc(100vh-56px)] bg-white overflow-hidden dark:bg-gray-950">
@@ -158,7 +171,7 @@ export default function EducationPage() {
                   {error}
                 </p>
                 <p className="text-xs text-gray-400 dark:text-gray-600">
-                  Check that the backend is running on port 5000.
+                  Check that Education.json exists in the public folder.
                 </p>
               </div>
             </div>
@@ -226,13 +239,12 @@ export default function EducationPage() {
 
               <div>
                 {data.map((edu, i) => {
-                  const colors =
-                    STREAM_COLORS[(edu as any).stream] ?? DEFAULT_COLOR;
+                  const colors = STREAM_COLORS[edu.stream] ?? DEFAULT_COLOR;
                   const duration = getDuration(
-                    (edu as any).duration ?? { start: null, end: null },
+                    edu.duration ?? { start: null, end: null },
                   );
                   const years = getYears(
-                    (edu as any).duration ?? { start: null, end: null },
+                    edu.duration ?? { start: null, end: null },
                   );
                   const isLast = i === data.length - 1;
 
@@ -266,7 +278,7 @@ export default function EducationPage() {
                       >
                         <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 hover:border-gray-300 dark:hover:border-gray-700 transition-colors duration-150">
                           <div className="flex items-start gap-3 mb-3.5">
-                            <GradeBadge grade={(edu as any).grade ?? ""} />
+                            <GradeBadge grade={edu.grade ?? ""} />
                             <div className="flex-1 min-w-0">
                               <h2 className="text-sm font-bold text-gray-900 dark:text-white leading-snug mb-0.5">
                                 {edu.title}
@@ -274,7 +286,6 @@ export default function EducationPage() {
                               <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                                 {edu.institution}
                               </p>
-                    
                             </div>
                           </div>
 
@@ -287,28 +298,24 @@ export default function EducationPage() {
                                 strokeWidth={2}
                               />
                               {edu.stream}
-                             
-
                             </span>
                             <div className="gap-2 flex items-center">
-                              
-                                {edu.skills?.map((s: string) => (
-                                  <span
-                                    key={s}
-                                    className="inline-flex items-center gap-3 text-[11px] font-medium px-2.5 py-1 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
-                                  >
-                                    {s}
-                                  </span>
-                                ))}
-                              
-                             </div>
+                              {edu.skills?.map((s: string) => (
+                                <span
+                                  key={s}
+                                  className="inline-flex items-center gap-3 text-[11px] font-medium px-2.5 py-1 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
+                                >
+                                  {s}
+                                </span>
+                              ))}
+                            </div>
                           </div>
 
                           <div className="pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between flex-wrap gap-2">
                             <div className="flex items-center gap-4">
                               <div className="flex items-center gap-1.5 text-[11px] text-gray-400 dark:text-gray-500">
                                 <MapPin className="w-3 h-3" strokeWidth={1.8} />
-                                <span>{(edu as any).location ?? ""}</span>
+                                <span>{edu.location ?? ""}</span>
                               </div>
                               <div className="flex items-center gap-1.5 text-[11px] text-gray-400 dark:text-gray-500">
                                 <Calendar
