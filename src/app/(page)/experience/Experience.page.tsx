@@ -384,7 +384,7 @@ export default function ExperiencePage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("../../../../public/Experience.data.json")
+    fetch("/Experience.data.json")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch experience data.");
         return res.json();
