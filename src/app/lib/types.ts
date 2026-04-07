@@ -38,14 +38,12 @@ export interface ApiResponse<T> {
   data: T;
 }
 
-// ── Shared ────────────────────────────────────────────────────────────────────
 export interface ApiResponse<T> {
   success: boolean;
   message: string;
   data: T;
 }
 
-// ── Music ─────────────────────────────────────────────────────────────────────
 export interface IComment {
   _id: string;
   userId: string;
@@ -70,69 +68,6 @@ export interface IMusic {
   createdAt: string;
   updatedAt: string;
 }
-
-// ── Skills ────────────────────────────────────────────────────────────────────
-export interface ISkill {
-  skillName: string;
-  category?: string;
-  subcategory?: string;
-  level?: string;
-  icon?: string;
-  description?: string;
-}
-
-// ── Blogs ─────────────────────────────────────────────────────────────────────
-export interface IBlogMeta {
-  slug: string;
-  title: string;
-  description: string;
-  author: string;
-  date: string;
-  tags: string[];
-  coverImage: string | null;
-}
-
-export interface IBlog extends IBlogMeta {
-  content: string;
-}
-
-// ── Experience ────────────────────────────────────────────────────────────────
-export interface IExperience {
-  slug: string;
-  role: string;
-  company: string;
-  duration?: string;
-  startDate?: string;
-  endDate?: string;
-  description?: string;
-  technologies?: string[];
-}
-
-// ── Education ─────────────────────────────────────────────────────────────────
-export interface IEducation {
-  title: string;
-  institution: string;
-  stream: string;
-  duration?: string;
-  startDate?: string;
-  endDate?: string;
-  description?: string;
-  skills?: string[];
-}
-
-// ── Projects ──────────────────────────────────────────────────────────────────
-export interface IProject {
-  projectSlug: string;
-  title: string;
-  description?: string;
-  techStack?: string[];
-  liveUrl?: string;
-  repoUrl?: string;
-  coverImage?: string | null;
-  category?: string;
-}
-
-// ── Contact ───────────────────────────────────────────────────────────────────
 export interface IContactPayload {
   name: string;
   email: string;

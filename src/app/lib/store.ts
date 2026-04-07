@@ -2,8 +2,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import musicReducer from "./features/music/music.slice";
 import likesReducer from "./features/likes/like.slice";
 import commentsReducer from "./features/comments/comment.slice";
-import skillsReducer from "./features/skill/skill.slice";
-import projectsReducer from "./features/projects/projects.slice";
 import contactReducer from "./features/contact/contact.slice";
 
 export const store = configureStore({
@@ -11,8 +9,6 @@ export const store = configureStore({
     music: musicReducer,
     likes: likesReducer,
     comments: commentsReducer,
-    skills: skillsReducer,
-    projects: projectsReducer,
     contact: contactReducer,
   },
 });
