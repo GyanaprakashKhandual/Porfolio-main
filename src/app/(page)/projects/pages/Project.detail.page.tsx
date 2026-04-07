@@ -1,10 +1,8 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { api } from "@/configs/env.config";
 import {
   ArrowLeft,
   ExternalLink,
@@ -19,9 +17,9 @@ import {
   Rocket,
   Users,
   Code2,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
-
-const BASE_URL = api.projects;
 
 interface Contributor {
   name: string;
@@ -41,6 +39,7 @@ interface Project {
   projectBackendRepository: string;
   projectFrontendRepository: string;
   projectLiveDemo: string;
+  projectImage: string[];
   projectOverview: string;
   projectKeyFeatures: string;
   projectFeatures: string[];
@@ -52,8 +51,55 @@ interface Project {
   projectContributors: Contributor[];
 }
 
+function ImageCarousel({ images }: { images: string[] }) {
+  const [current, setCurrent] = useState(0);
 
-// ─── Section Card ─────────────────────────────────────────────────────────────
+  if (!images || images.length === 0) return null;
+
+  const prev = () => setCurrent((c) => (c - 1 + images.length) % images.length);
+  const next = () => setCurrent((c) => (c + 1) % images.length);
+
+  return (
+    <div className="relative w-full rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-800 aspect-video mb-5">
+      <img
+        src={images[current]}
+        alt={`Project screenshot ${current + 1}`}
+        className="w-full h-full object-cover"
+      />
+      {images.length > 1 && (
+        <>
+          <button
+            onClick={prev}
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" strokeWidth={2} />
+          </button>
+          <button
+            onClick={next}
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-colors"
+          >
+            <ChevronRight className="w-4 h-4" strokeWidth={2} />
+          </button>
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                  i === current ? "bg-white" : "bg-white/40"
+                }`}
+              />
+            ))}
+          </div>
+          <div className="absolute top-3 right-3 text-[11px] font-medium text-white bg-black/50 px-2 py-0.5 rounded-lg">
+            {current + 1} / {images.length}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 function Section({
   icon,
   title,
@@ -83,7 +129,6 @@ function Section({
   );
 }
 
-// ─── Bullet list from newline-separated string ────────────────────────────────
 function BulletList({ content }: { content: string }) {
   const lines = content.split("\n").filter(Boolean);
   return (
@@ -104,7 +149,6 @@ function BulletList({ content }: { content: string }) {
   );
 }
 
-// ─── Skeleton loader ──────────────────────────────────────────────────────────
 function SkeletonBlock({ className }: { className?: string }) {
   return (
     <div
@@ -117,6 +161,7 @@ function PageSkeleton() {
   return (
     <div className="p-6 lg:p-8 max-w-4xl mx-auto space-y-5">
       <SkeletonBlock className="h-5 w-28" />
+      <SkeletonBlock className="h-56 w-full rounded-2xl" />
       <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 space-y-4">
         <SkeletonBlock className="h-3 w-20" />
         <SkeletonBlock className="h-8 w-2/3" />
@@ -145,7 +190,6 @@ function PageSkeleton() {
   );
 }
 
-// ─── Main page ────────────────────────────────────────────────────────────────
 export default function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const router = useRouter();
@@ -155,86 +199,27 @@ export default function ProjectDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("[ProjectDetailPage] useEffect triggered");
-    console.log("[ProjectDetailPage] slug value:", slug);
-    console.log("[ProjectDetailPage] BASE_URL:", BASE_URL);
-
-    if (!slug) {
-      console.log("[ProjectDetailPage] slug is missing, stopping fetch");
-      return;
-    }
-
-    const encodedSlug = encodeURIComponent(slug);
-    const fetchUrl = `${BASE_URL}/${encodedSlug}`;
-    
-    console.log(
-      "[ProjectDetailPage] Starting fetch for:",
-      fetchUrl,
-    );
+    if (!slug) return;
 
     setLoading(true);
-    console.log("[ProjectDetailPage] Loading set to true");
-
     setError(null);
-    console.log("[ProjectDetailPage] Error reset");
-
     setProject(null);
-    console.log("[ProjectDetailPage] Project reset");
 
-    fetch(fetchUrl)
+    fetch("/Project.data.json")
       .then((r) => {
-        console.log("[ProjectDetailPage] Raw response object:", r);
-        console.log(
-          "[ProjectDetailPage] Response status:",
-          r.status,
-          r.statusText,
-        );
-        console.log("[ProjectDetailPage] Response headers:", [
-          ...r.headers.entries(),
-        ]);
-        console.log("[ProjectDetailPage] Response URL:", r.url);
-
         if (!r.ok) throw new Error(`HTTP ${r.status}: ${r.statusText}`);
-
-        console.log("[ProjectDetailPage] Converting response to JSON...");
         return r.json();
       })
-      .then((res) => {
-        console.log("[ProjectDetailPage] Full API response:", res);
-        console.log(
-          "[ProjectDetailPage] Response keys:",
-          Object.keys(res || {}),
-        );
-        console.log("[ProjectDetailPage] Response.data:", res?.data);
-        console.log(
-          "[ProjectDetailPage] Response.projectSlug:",
-          res?.projectSlug,
-        );
-
-        const projectData = res?.data ?? (res?.projectSlug ? res : null);
-
-        console.log("[ProjectDetailPage] Extracted project data:", projectData);
-
-        if (!projectData) {
-          console.log("[ProjectDetailPage] No project data found in response");
-          throw new Error(res?.message ?? `Project "${slug}" not found.`);
-        }
-
-        console.log("[ProjectDetailPage] Setting project state...");
-        setProject(projectData);
-        console.log("[ProjectDetailPage] Project state updated");
+      .then((data: Project[]) => {
+        const found = data.find((p) => p.projectSlug === slug);
+        if (!found) throw new Error(`Project "${slug}" not found.`);
+        setProject(found);
       })
       .catch((e) => {
-        console.error("[ProjectDetailPage] fetch error:", e);
-        console.error("[ProjectDetailPage] Error message:", e.message);
-
         setError(e.message ?? "Failed to load project.");
-        console.log("[ProjectDetailPage] Error state updated");
       })
       .finally(() => {
-        console.log("[ProjectDetailPage] Fetch finished");
         setLoading(false);
-        console.log("[ProjectDetailPage] Loading set to false");
       });
   }, [slug]);
 
@@ -259,10 +244,6 @@ export default function ProjectDetailPage() {
               {slug}
             </code>
           </p>
-          <p className="text-xs text-gray-400 dark:text-gray-600">
-            Check the browser console for details. Common causes: CORS not
-            enabled on the backend, backend not running, or slug mismatch.
-          </p>
         </div>
         <button
           onClick={() => router.push("/projects")}
@@ -276,7 +257,6 @@ export default function ProjectDetailPage() {
 
   return (
     <div className="p-6 lg:p-8 max-w-4xl mx-auto">
-      {/* Back button */}
       <motion.button
         initial={{ opacity: 0, x: -8 }}
         animate={{ opacity: 1, x: 0 }}
@@ -291,7 +271,16 @@ export default function ProjectDetailPage() {
         All Projects
       </motion.button>
 
-      {/* Hero header */}
+      {project.projectImage?.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <ImageCarousel images={project.projectImage} />
+        </motion.div>
+      )}
+
       <motion.div
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -311,7 +300,6 @@ export default function ProjectDetailPage() {
             </p>
           </div>
 
-          {/* Action buttons */}
           <div className="flex flex-wrap sm:flex-col gap-2 shrink-0">
             <a
               href={project.projectLiveDemo}
@@ -343,7 +331,6 @@ export default function ProjectDetailPage() {
           </div>
         </div>
 
-        {/* Tags + Tech */}
         <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-wrap gap-1.5">
           {project.projectTags.map((tag) => (
             <span
@@ -365,9 +352,7 @@ export default function ProjectDetailPage() {
         </div>
       </motion.div>
 
-      {/* Content grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Overview — full width */}
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -388,7 +373,6 @@ export default function ProjectDetailPage() {
           </p>
         </motion.div>
 
-        {/* Features list */}
         <Section
           icon={<CheckCircle2 className="w-4 h-4" strokeWidth={1.8} />}
           title="Features"
@@ -407,7 +391,6 @@ export default function ProjectDetailPage() {
           </ul>
         </Section>
 
-        {/* Key features */}
         <Section
           icon={<Star className="w-4 h-4" strokeWidth={1.8} />}
           title="Key Features"
@@ -416,7 +399,6 @@ export default function ProjectDetailPage() {
           <BulletList content={project.projectKeyFeatures} />
         </Section>
 
-        {/* Stand-out */}
         <Section
           icon={<Lightbulb className="w-4 h-4" strokeWidth={1.8} />}
           title="What Makes It Stand Out"
@@ -427,7 +409,6 @@ export default function ProjectDetailPage() {
           </p>
         </Section>
 
-        {/* Timeline */}
         <Section
           icon={<Clock className="w-4 h-4" strokeWidth={1.8} />}
           title="Timeline"
@@ -463,7 +444,6 @@ export default function ProjectDetailPage() {
           </div>
         </Section>
 
-        {/* Challenges */}
         <Section
           icon={<AlertTriangle className="w-4 h-4" strokeWidth={1.8} />}
           title="Challenges"
@@ -472,7 +452,6 @@ export default function ProjectDetailPage() {
           <BulletList content={project.projectChallenges} />
         </Section>
 
-        {/* Lessons learned */}
         <Section
           icon={<BookOpen className="w-4 h-4" strokeWidth={1.8} />}
           title="Lessons Learned"
@@ -481,7 +460,6 @@ export default function ProjectDetailPage() {
           <BulletList content={project.projectLessonsLearned} />
         </Section>
 
-        {/* Future plans — full width */}
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -500,7 +478,6 @@ export default function ProjectDetailPage() {
           <BulletList content={project.projectFuturePlans} />
         </motion.div>
 
-        {/* Contributors — full width */}
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}

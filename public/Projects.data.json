@@ -1,0 +1,120 @@
+[
+  {
+    "projectName": "Caffetest",
+    "projectSlug": "caffetest",
+    "projectDescription": "A web application for automating all the manual effort on automation testing.",
+    "projectType": "Full Stack Web Application",
+    "projectTags": ["Web Development", "Automation Testing", "Full Stack"],
+    "projectBackendRepository": "https://github.com/GyanaprakashKhandual/bug-tracker-backend",
+    "projectFrontendRepository": "https://github.com/GyanaprakashKhandual/bug-tracker-frontend",
+    "projectLiveDemo": "https://caffetest.vercel.app/",
+    "projectImage": [
+      "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/caffetest_dashboard.png",
+      "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/caffetest_kanban.png",
+      "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/caffetest_testcases.png",
+      "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/caffetest_reports.png",
+      "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/caffetest_bugtracking.png"
+    ],
+    "projectTechnologies": [
+      "React",
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "JWT",
+      "Vercel",
+      "Cloudinary",
+      "Tailwind CSS",
+      "Render",
+      "Next JS"
+    ],
+    "projectFeatures": [
+      "Access Management with role-based permissions",
+      "Project and workspace management",
+      "Hierarchical folder system for organizing test cases",
+      "Sprint and phase management for agile workflows",
+      "Multiple dashboard views including Kanban, Card, Split and List",
+      "Real-time auto-save and keystroke tracking",
+      "Complete CRUD operations for test cases, bugs and reports",
+      "Built-in documentation similar to Confluence",
+      "Import and export features for backup and migration",
+      "AI-powered test generation from Selenium automation scripts",
+      "Automatic bug creation from failed test cases",
+      "Integrated messaging and team collaboration"
+    ],
+    "projectOverview": "CafeTest is a comprehensive bug tracking and test management platform designed to automate and streamline software testing workflows. The application integrates modern full stack technologies with AI capabilities to simplify how QA teams manage projects, test cases, bugs, and reports. By combining structured test management with intelligent automation, CafeTest eliminates repetitive manual effort and improves testing efficiency.\n\nThe platform includes enterprise-grade capabilities such as role-based access control, project organization, sprint planning, and flexible dashboards. It also integrates AI APIs to automatically generate test cases from Selenium automation scripts and identify failures as bugs. With features like real-time synchronization, collaborative messaging, documentation support, and detailed reporting dashboards, CafeTest acts as a centralized platform for developers, testers, and project managers.",
+    "projectKeyFeatures": "AI Test Case Generation from Selenium Scripts\nRole-Based Access Management\nMulti-view Dashboard (Kanban, Split, Card, List)\nReal-time Auto-save with Keystroke Detection\nBuilt-in Messaging & Collaboration\nTheme Customization (Dark/Light/System)\nVS Code Extension Integration\nImport/Export & Sharing Features",
+    "projectTimeLine": "Planning & Research - Architecture design and feature planning\nPhase 1 Development - Core backend APIs and database structure\nPhase 2 Development - Frontend UI, dashboard views, and test management system\nPhase 3 Integration - AI APIs, messaging system, and automation workflows\nDeployment - Production deployment using Vercel and Render",
+    "projectStandOutFeatures": "The most unique feature of CafeTest is the VS Code extension integration that leverages Anthropic AI APIs to automatically generate test cases from Selenium automation scripts. It also detects failures during execution and categorizes them as bugs, significantly reducing manual effort in test creation and bug reporting. This makes CafeTest far more intelligent than traditional tools such as Jira and Zephyr.",
+    "projectChallenges": "Designing a scalable test case management structure for large projects\nImplementing real-time auto-save and synchronization without performance issues\nIntegrating AI APIs for automated test generation\nBuilding multiple dashboard views with dynamic data handling\nCreating a seamless workflow between test execution and bug tracking",
+    "projectLessonsLearned": "Improved understanding of scalable full-stack architecture\nLearned advanced state management and real-time data handling\nExperience integrating AI APIs into practical developer workflows\nDeepened knowledge of automation testing workflows and bug management systems\nEnhanced UI/UX design for complex dashboard applications",
+    "projectFuturePlans": "Add CI/CD integration for automated testing pipelines\nIntroduce AI-powered bug prioritization and severity prediction\nAdd advanced analytics dashboards with predictive insights\nIntegrate additional automation frameworks like Cypress and Playwright\nDevelop a desktop version using Electron",
+    "projectContributors": [
+      {
+        "name": "Gyana prakash Khandual",
+        "role": "Full Stack Developer",
+        "githubProfile": "https://github.com/GyanaprakashKhandual",
+        "linkedinProfile": "https://www.linkedin.com/in/gyanaprakashkhandual/",
+        "email": "gyanprakashkhandual@gmail.com"
+      }
+    ]
+  },
+  {
+    "projectName": "Resolution Pro",
+    "projectSlug": "resolution-pro",
+    "projectDescription": "A full stack document sharing and meeting tracking platform with AI-powered features, user management, and secure access control designed for seamless collaboration across organizations.",
+    "projectType": "Full Stack Web Application",
+    "projectTags": [
+      "Web Development",
+      "Document Management",
+      "Collaboration Platform",
+      "Full Stack"
+    ],
+    "projectBackendRepository": "https://github.com/GyanaprakashKhandual/resolution-pro-backend",
+    "projectFrontendRepository": "https://github.com/GyanaprakashKhandual/resolution-pro-frontend",
+    "projectLiveDemo": "https://resolution-pro-demo.vercel.app/",
+    "projectImage": [
+      "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/resolutionpro_dashboard.png",
+      "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/resolutionpro_documents.png",
+      "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/resolutionpro_meetings.png",
+      "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/resolutionpro_ai_features.png"
+    ],
+    "projectTechnologies": [
+      "React",
+      "Next JS",
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "JWT",
+      "Tailwind CSS",
+      "Cloudinary",
+      "Vercel",
+      "Render"
+    ],
+    "projectFeatures": [
+      "Secure document sharing and management system",
+      "AI-powered document insights and recommendations",
+      "Meeting scheduling and tracking across teams",
+      "Role-based access management for users",
+      "Real-time collaboration and document updates",
+      "Advanced search and filtering for documents and meetings",
+      "Full CRUD operations for documents, meetings, and users",
+      "Dashboard analytics for document activity and meetings"
+    ],
+    "projectOverview": "Resolution Pro is a full stack collaboration platform designed to simplify document sharing, meeting management, and organizational communication. The application enables teams to upload, manage, and share documents securely while maintaining structured meeting records and collaboration workflows. It integrates AI-powered capabilities to provide intelligent insights, automate document processing, and enhance productivity. Built using modern web technologies, the platform focuses on scalability, security, and seamless user experience for enterprise-level collaboration.",
+    "projectKeyFeatures": "AI-assisted document management\nMeeting scheduling and tracking system\nRole-based user access control\nSecure document sharing and storage\nInteractive dashboard with activity insights\nAdvanced search and filtering features\nFull collaboration tools for teams",
+    "projectTimeLine": "Planning & System Design - Architecture planning and feature specification\nPhase 1 Development - Backend APIs and database schema\nPhase 2 Development - Frontend UI and document management features\nPhase 3 Integration - AI integration, authentication, and collaboration tools\nDeployment - Production deployment using Vercel and Render",
+    "projectStandOutFeatures": "Resolution Pro stands out by combining document sharing, meeting management, and AI-powered insights in a single collaboration platform. The integration of AI enhances document understanding and workflow automation, making it highly efficient for teams managing large volumes of documents and meetings.",
+    "projectChallenges": "Designing a scalable document storage and management system\nImplementing secure role-based access control\nHandling large document uploads and storage efficiently\nEnsuring smooth real-time collaboration features\nIntegrating AI features without affecting performance",
+    "projectLessonsLearned": "Improved understanding of full stack architecture and scalable application design\nLearned secure authentication and authorization strategies\nEnhanced experience in building collaboration-based web platforms\nGained practical knowledge of integrating AI features into production applications",
+    "projectFuturePlans": "Add real-time document editing and collaborative commenting\nImplement AI-powered meeting summaries\nIntroduce notification and reminder systems\nAdd enterprise-level integrations with tools like Slack and Google Drive\nDevelop a desktop version using Electron",
+    "projectContributors": [
+      {
+        "name": "Gyana prakash Khandual",
+        "role": "Full Stack Developer",
+        "githubProfile": "https://github.com/GyanaprakashKhandual",
+        "linkedinProfile": "https://www.linkedin.com/in/gyanaprakashkhandual/",
+        "email": "gyanprakashkhandual@gmail.com"
+      }
+    ]
+  }
+]
