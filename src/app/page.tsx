@@ -1,3 +1,4 @@
+import AnnouncementWindow from "./components/Announcement";
 import HomePage from "./pages/home/Main";
 
 export const metadata = {
@@ -7,5 +8,10 @@ export const metadata = {
 };
 
 export default function Home() {
-  return <HomePage />;
+  return (
+    <div>
+      <HomePage />
+      <AnnouncementWindow />
+    </div>
+  );
 }
