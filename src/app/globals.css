@@ -15,7 +15,7 @@ body {
   display: none;
 }
 ::-webkit-scrollbar-thumb {
-  background: #0a0a0a;
+  background: #4a4646;
 }
 ::-webkit-scrollbar-track {
   background-color: #ffffff;
