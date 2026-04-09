@@ -13,8 +13,6 @@ const getEnvironmentConfig = () => {
     // API Endpoints
     api: {
       music: `${baseUrl}/api/music`,
-      skills: `${baseUrl}/api/skills`,
-      projects: `${baseUrl}/api/projects`,
       contact: `${baseUrl}/api/contact`,
     },
 
