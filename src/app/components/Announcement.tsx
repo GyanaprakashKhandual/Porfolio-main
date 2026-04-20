@@ -70,18 +70,13 @@ function AnnouncementWindow() {
                 />
               </div>
               <h2 className="text-black dark:text-white text-lg font-semibold leading-snug">
-                Show markdown is live
+                Send ENV is live
               </h2>
             </div>
 
             {/* Description */}
             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed mb-4 pl-11">
-              Render raw{" "}
-              <code className="bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs px-1.5 py-0.5 rounded font-mono">
-                .md
-              </code>{" "}
-              files into beautiful UI inside your React app — zero config, plug
-              and play.
+              Now share your env file with encrypted format with Github is JavaScript application
             </p>
 
             {/* Install command */}
@@ -91,14 +86,14 @@ function AnnouncementWindow() {
                 className="text-zinc-400 dark:text-zinc-500 shrink-0"
               />
               <code className="font-mono text-sm text-zinc-800 dark:text-zinc-300">
-                npm i showmarkdown
+                npm i sendenv
               </code>
             </div>
 
             {/* CTA Buttons */}
             <div className="flex gap-2.5 mb-3">
               <motion.a
-                href="http://writemarkdown.vercel.app"
+                href="http://www.npmjs.com/package/sendenv"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.02 }}
@@ -109,7 +104,7 @@ function AnnouncementWindow() {
                 Visit Site
               </motion.a>
               <motion.a
-                href="https://github.com/gyanaprakashkhandual/markdown"
+                href="https://github.com/gyanaprakashkhandual"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.02 }}
