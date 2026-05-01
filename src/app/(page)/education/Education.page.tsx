@@ -131,7 +131,7 @@ export default function EducationPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/Education.data.json")
+    fetch("/education/education.data.json")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch education data.");
         console.log(res);
