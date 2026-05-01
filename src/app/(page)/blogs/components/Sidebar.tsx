@@ -10,34 +10,20 @@ import {
   Search,
   X,
   ChevronRight,
-  Loader2,
   SlidersHorizontal,
   Check,
   BookOpen,
 } from "lucide-react";
-import { blogs } from "../data/Blogs";
-
-interface Blog {
-  slug: string;
-  title: string;
-  description: string;
-  tag: string;
-  tagColor: string;
-  readTime: string;
-}
+import { blogs, Blog } from "../data/Blogs";
 
 export default function Sidebar() {
   const pathname = usePathname();
 
-  const [allBlogs] = useState<Blog[]>(blogs);
   const [filtered, setFiltered] = useState<Blog[]>(blogs);
   const [query, setQuery] = useState("");
-  const [loading] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [activeTags, setActiveTags] = useState<Set<string>>(new Set());
-  const [allTags] = useState<string[]>(
-    Array.from(new Set(blogs.map((b) => b.tag))).sort(),
-  );
+  const allTags = Array.from(new Set(blogs.map((b) => b.tag))).sort();
 
   const filterRef = useRef<HTMLDivElement>(null);
 
@@ -54,18 +40,16 @@ export default function Sidebar() {
   useEffect(() => {
     const q = query.toLowerCase();
     setFiltered(
-      allBlogs.filter((b) => {
+      blogs.filter((b) => {
         const matchesQuery =
           b.title.toLowerCase().includes(q) ||
           b.description.toLowerCase().includes(q) ||
           b.tag.toLowerCase().includes(q);
-
         const matchesTags = activeTags.size === 0 || activeTags.has(b.tag);
-
         return matchesQuery && matchesTags;
       }),
     );
-  }, [query, allBlogs, activeTags]);
+  }, [query, activeTags]);
 
   function toggleTag(tag: string) {
     setActiveTags((prev) => {
@@ -81,7 +65,6 @@ export default function Sidebar() {
 
   return (
     <aside className="w-72 shrink-0 flex flex-col h-full bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800">
-      {/* Header */}
       <div className="px-4 pt-5 pb-4 border-b border-gray-200 dark:border-gray-800">
         <div className="flex items-center gap-2 mb-3">
           <BookOpen
@@ -94,7 +77,6 @@ export default function Sidebar() {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Search */}
           <div className="relative flex-1">
             <Search
               className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 dark:text-gray-500 pointer-events-none"
@@ -122,7 +104,6 @@ export default function Sidebar() {
             </AnimatePresence>
           </div>
 
-          {/* Filter button */}
           <div className="relative" ref={filterRef}>
             <button
               onClick={() => setFilterOpen((v) => !v)}
@@ -142,7 +123,6 @@ export default function Sidebar() {
               )}
             </button>
 
-            {/* Filter dropdown */}
             <AnimatePresence>
               {filterOpen && (
                 <motion.div
@@ -214,7 +194,6 @@ export default function Sidebar() {
           </div>
         </div>
 
-        {/* Active tag pills */}
         <AnimatePresence>
           {activeTags.size > 0 && (
             <motion.div
@@ -239,18 +218,8 @@ export default function Sidebar() {
         </AnimatePresence>
       </div>
 
-      {/* List */}
       <div className="flex-1 overflow-y-auto py-2 px-2 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
-        {loading && (
-          <div className="flex flex-col items-center justify-center py-12 gap-3">
-            <Loader2 className="w-5 h-5 text-gray-400 dark:text-gray-600 animate-spin" />
-            <p className="text-xs text-gray-400 dark:text-gray-600">
-              Loading guides…
-            </p>
-          </div>
-        )}
-
-        {!loading && filtered.length === 0 && (
+        {filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 gap-2 px-4">
             <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800/60 flex items-center justify-center mb-1">
               <Search
@@ -293,7 +262,6 @@ export default function Sidebar() {
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
-                        {/* Tag badge */}
                         <div className="mb-1.5">
                           <span
                             className={`text-[10px] px-1.5 py-0.5 rounded-md font-medium border transition-colors duration-150 ${
@@ -310,7 +278,6 @@ export default function Sidebar() {
                           </span>
                         </div>
 
-                        {/* Title */}
                         <p
                           className={`text-sm font-semibold truncate mb-0.5 transition-colors ${
                             isActive
@@ -321,7 +288,6 @@ export default function Sidebar() {
                           {blog.title}
                         </p>
 
-                        {/* Description */}
                         <p
                           className={`text-xs line-clamp-2 leading-relaxed ${
                             isActive
@@ -332,7 +298,6 @@ export default function Sidebar() {
                           {blog.description}
                         </p>
 
-                        {/* Read time */}
                         <p
                           className={`text-[10px] mt-1.5 ${
                             isActive
@@ -361,10 +326,9 @@ export default function Sidebar() {
         </AnimatePresence>
       </div>
 
-      {/* Footer */}
       <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-800">
         <p className="text-[11px] text-gray-400 dark:text-gray-600 text-center">
-          {`${allBlogs.length} total guide${allBlogs.length !== 1 ? "s" : ""}`}
+          {`${blogs.length} total guide${blogs.length !== 1 ? "s" : ""}`}
         </p>
       </div>
     </aside>
