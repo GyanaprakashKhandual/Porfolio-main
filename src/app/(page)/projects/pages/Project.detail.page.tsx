@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @next/next/no-img-element */
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -10,47 +10,76 @@ import {
   ExternalLink,
   Github,
   Tag,
-  CheckCircle2,
-  Lightbulb,
-  Clock,
-  Star,
   AlertTriangle,
-  BookOpen,
-  Rocket,
-  Users,
-  Code2,
   ChevronLeft,
   ChevronRight,
+  Code2,
 } from "lucide-react";
+import { MessageParser } from "@/app/message-parser/core/Parser.core";
 
-interface Contributor {
-  name: string;
-  role: string;
-  githubProfile: string;
-  linkedinProfile: string;
-  email: string;
+interface ProjectMeta {
+  slug: string;
+  title: string;
+  type: string;
+  tags: string[];
+  technologies: string[];
+  liveDemo: string;
+  repositoryFrontend: string;
+  repositoryBackend: string;
+  images: string[];
+  description: string;
 }
 
-interface Project {
-  projectName: string;
-  projectSlug: string;
-  projectDescription: string;
-  projectType: string;
-  projectTags: string[];
-  projectTechnologies: string[];
-  projectBackendRepository: string;
-  projectFrontendRepository: string;
-  projectLiveDemo: string;
-  projectImage: string[];
-  projectOverview: string;
-  projectKeyFeatures: string;
-  projectFeatures: string[];
-  projectTimeLine: string;
-  projectStandOutFeatures: string;
-  projectChallenges: string;
-  projectLessonsLearned: string;
-  projectFuturePlans: string;
-  projectContributors: Contributor[];
+function parseFrontmatter(raw: string): {
+  meta: Record<string, unknown>;
+  body: string;
+} {
+  const match = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if (!match) return { meta: {}, body: raw };
+
+  const meta: Record<string, unknown> = {};
+  const yamlBlock = match[1];
+  const body = match[2].trim();
+
+  let currentKey = "";
+  let inArray = false;
+  const arrayBuffer: string[] = [];
+
+  for (const line of yamlBlock.split("\n")) {
+    const arrayItem = line.match(/^\s{2}-\s+(.+)/);
+    const keyValue = line.match(/^([a-zA-Z0-9_]+):\s*(.*)/);
+
+    if (arrayItem && inArray) {
+      arrayBuffer.push(arrayItem[1].trim());
+    } else if (keyValue) {
+      if (inArray && currentKey) {
+        meta[currentKey] = [...arrayBuffer];
+        arrayBuffer.length = 0;
+        inArray = false;
+      }
+      currentKey = keyValue[1];
+      const val = keyValue[2].trim();
+      if (val === "") {
+        inArray = true;
+      } else {
+        meta[currentKey] = val;
+        inArray = false;
+      }
+    }
+  }
+
+  if (inArray && currentKey) meta[currentKey] = [...arrayBuffer];
+
+  return { meta, body };
+}
+
+function extractDescription(body: string): string {
+  const lines = body.split("\n");
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed && !trimmed.startsWith("#")) return trimmed;
+  }
+  return "";
 }
 
 function ImageCarousel({ images }: { images: string[] }) {
@@ -102,55 +131,6 @@ function ImageCarousel({ images }: { images: string[] }) {
   );
 }
 
-function Section({
-  icon,
-  title,
-  children,
-  delay = 0,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  children: React.ReactNode;
-  delay?: number;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5"
-    >
-      <div className="flex items-center gap-2.5 mb-4">
-        <span className="text-gray-500 dark:text-gray-400">{icon}</span>
-        <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
-          {title}
-        </h3>
-      </div>
-      {children}
-    </motion.div>
-  );
-}
-
-function BulletList({ content }: { content: string }) {
-  const lines = content.split("\n").filter(Boolean);
-  return (
-    <ul className="space-y-2">
-      {lines.map((line, i) => (
-        <li
-          key={i}
-          className="flex items-start gap-2.5 text-sm text-gray-600 dark:text-gray-400 leading-relaxed"
-        >
-          <CheckCircle2
-            className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 mt-0.5 shrink-0"
-            strokeWidth={2}
-          />
-          {line}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
 function SkeletonBlock({ className }: { className?: string }) {
   return (
     <div
@@ -176,10 +156,10 @@ function PageSkeleton() {
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {[...Array(6)].map((_, i) => (
+        {[...Array(4)].map((_, i) => (
           <div
             key={i}
-            className={`rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 space-y-3 ${i === 0 || i === 5 ? "lg:col-span-2" : ""}`}
+            className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 space-y-3"
           >
             <SkeletonBlock className="h-4 w-28" />
             <SkeletonBlock className="h-3 w-full" />
@@ -196,7 +176,8 @@ export default function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const router = useRouter();
 
-  const [project, setProject] = useState<Project | null>(null);
+  const [meta, setMeta] = useState<ProjectMeta | null>(null);
+  const [body, setBody] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -205,29 +186,39 @@ export default function ProjectDetailPage() {
 
     setLoading(true);
     setError(null);
-    setProject(null);
+    setMeta(null);
+    setBody("");
 
-    fetch("/Projects.data.json")
+    fetch(`/${slug}.md`)
       .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}: ${r.statusText}`);
-        return r.json();
+        if (!r.ok) throw new Error(`Project "${slug}" not found.`);
+        return r.text();
       })
-      .then((data: Project[]) => {
-        const found = data.find((p) => p.projectSlug === slug);
-        if (!found) throw new Error(`Project "${slug}" not found.`);
-        setProject(found);
+      .then((raw) => {
+        const { meta: parsed, body: content } = parseFrontmatter(raw);
+
+        setMeta({
+          slug: (parsed.slug as string) ?? (slug as string),
+          title: (parsed.title as string) ?? "",
+          type: (parsed.type as string) ?? "",
+          tags: (parsed.tags as string[]) ?? [],
+          technologies: (parsed.technologies as string[]) ?? [],
+          liveDemo: (parsed.liveDemo as string) ?? "",
+          repositoryFrontend: (parsed.repositoryFrontend as string) ?? "",
+          repositoryBackend: (parsed.repositoryBackend as string) ?? "",
+          images: (parsed.images as string[]) ?? [],
+          description: extractDescription(content),
+        });
+
+        setBody(content);
       })
-      .catch((e) => {
-        setError(e.message ?? "Failed to load project.");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .catch((e) => setError(e.message ?? "Failed to load project."))
+      .finally(() => setLoading(false));
   }, [slug]);
 
   if (loading) return <PageSkeleton />;
 
-  if (error || !project)
+  if (error || !meta)
     return (
       <div className="flex flex-col items-center justify-center h-full gap-4 p-8">
         <div className="w-12 h-12 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900/50 flex items-center justify-center">
@@ -273,13 +264,13 @@ export default function ProjectDetailPage() {
         All Projects
       </motion.button>
 
-      {project.projectImage?.length > 0 && (
+      {meta.images?.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <ImageCarousel images={project.projectImage} />
+          <ImageCarousel images={meta.images} />
         </motion.div>
       )}
 
@@ -292,49 +283,55 @@ export default function ProjectDetailPage() {
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="flex-1 min-w-0">
             <p className="text-[11px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-medium mb-1.5">
-              {project.projectType}
+              {meta.type}
             </p>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">
-              {project.projectName}
+              {meta.title}
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-              {project.projectDescription}
+              {meta.description}
             </p>
           </div>
 
           <div className="flex flex-wrap sm:flex-col gap-2 shrink-0">
-            <a
-              href={project.projectLiveDemo}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:opacity-90 transition-opacity"
-            >
-              <ExternalLink className="w-3.5 h-3.5" strokeWidth={2} />
-              Live Demo
-            </a>
-            <a
-              href={project.projectFrontendRepository}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all"
-            >
-              <Github className="w-3.5 h-3.5" strokeWidth={1.8} />
-              Frontend
-            </a>
-            <a
-              href={project.projectBackendRepository}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all"
-            >
-              <Code2 className="w-3.5 h-3.5" strokeWidth={1.8} />
-              Backend
-            </a>
+            {meta.liveDemo && (
+              <a
+                href={meta.liveDemo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:opacity-90 transition-opacity"
+              >
+                <ExternalLink className="w-3.5 h-3.5" strokeWidth={2} />
+                Live Demo
+              </a>
+            )}
+            {meta.repositoryFrontend && (
+              <a
+                href={meta.repositoryFrontend}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all"
+              >
+                <Github className="w-3.5 h-3.5" strokeWidth={1.8} />
+                Frontend
+              </a>
+            )}
+            {meta.repositoryBackend && (
+              <a
+                href={meta.repositoryBackend}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all"
+              >
+                <Code2 className="w-3.5 h-3.5" strokeWidth={1.8} />
+                Backend
+              </a>
+            )}
           </div>
         </div>
 
         <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-wrap gap-1.5">
-          {project.projectTags.map((tag) => (
+          {meta.tags.map((tag) => (
             <span
               key={tag}
               className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400"
@@ -343,7 +340,7 @@ export default function ProjectDetailPage() {
               {tag}
             </span>
           ))}
-          {project.projectTechnologies.map((tech) => (
+          {meta.technologies.map((tech) => (
             <span
               key={tech}
               className="text-[11px] px-2 py-0.5 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 border border-gray-900 dark:border-white font-medium"
@@ -354,189 +351,28 @@ export default function ProjectDetailPage() {
         </div>
       </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.35 }}
-          className="lg:col-span-2 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5"
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.35 }}
+        className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6"
+      >
+        <div
+          className="prose prose-sm dark:prose-invert max-w-none
+          prose-headings:font-bold prose-headings:tracking-tight
+          prose-h1:text-2xl prose-h1:text-gray-900 dark:prose-h1:text-white prose-h1:mb-4
+          prose-h2:text-base prose-h2:text-gray-900 dark:prose-h2:text-white prose-h2:mt-8 prose-h2:mb-3 prose-h2:pb-2 prose-h2:border-b prose-h2:border-gray-100 dark:prose-h2:border-gray-800
+          prose-h3:text-sm prose-h3:text-gray-700 dark:prose-h3:text-gray-300 prose-h3:mt-5 prose-h3:mb-2
+          prose-p:text-sm prose-p:text-gray-600 dark:prose-p:text-gray-400 prose-p:leading-relaxed
+          prose-ul:space-y-1.5 prose-li:text-sm prose-li:text-gray-600 dark:prose-li:text-gray-400
+          prose-strong:text-gray-900 dark:prose-strong:text-white prose-strong:font-semibold
+          prose-code:text-xs prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-gray-700 dark:prose-code:text-gray-300
+          prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
+          prose-hr:border-gray-100 dark:prose-hr:border-gray-800"
         >
-          <div className="flex items-center gap-2.5 mb-4">
-            <BookOpen
-              className="w-4 h-4 text-gray-500 dark:text-gray-400"
-              strokeWidth={1.8}
-            />
-            <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
-              Overview
-            </h3>
-          </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-line">
-            {project.projectOverview}
-          </p>
-        </motion.div>
-
-        <Section
-          icon={<CheckCircle2 className="w-4 h-4" strokeWidth={1.8} />}
-          title="Features"
-          delay={0.15}
-        >
-          <ul className="space-y-2">
-            {project.projectFeatures.map((f, i) => (
-              <li
-                key={i}
-                className="flex items-start gap-2.5 text-sm text-gray-600 dark:text-gray-400 leading-relaxed"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 mt-1.5 shrink-0" />
-                {f}
-              </li>
-            ))}
-          </ul>
-        </Section>
-
-        <Section
-          icon={<Star className="w-4 h-4" strokeWidth={1.8} />}
-          title="Key Features"
-          delay={0.2}
-        >
-          <BulletList content={project.projectKeyFeatures} />
-        </Section>
-
-        <Section
-          icon={<Lightbulb className="w-4 h-4" strokeWidth={1.8} />}
-          title="What Makes It Stand Out"
-          delay={0.25}
-        >
-          <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-            {project.projectStandOutFeatures}
-          </p>
-        </Section>
-
-        <Section
-          icon={<Clock className="w-4 h-4" strokeWidth={1.8} />}
-          title="Timeline"
-          delay={0.3}
-        >
-          <div className="space-y-3">
-            {project.projectTimeLine
-              .split("\n")
-              .filter(Boolean)
-              .map((phase, i, arr) => {
-                const [title, ...rest] = phase.split(" - ");
-                return (
-                  <div key={i} className="flex gap-3">
-                    <div className="flex flex-col items-center">
-                      <div className="w-2 h-2 rounded-full bg-blue-500 dark:bg-blue-400 mt-1 shrink-0" />
-                      {i < arr.length - 1 && (
-                        <div className="w-px flex-1 bg-gray-200 dark:bg-gray-700 mt-1" />
-                      )}
-                    </div>
-                    <div className="pb-3">
-                      <p className="text-xs font-semibold text-gray-900 dark:text-white">
-                        {title}
-                      </p>
-                      {rest.length > 0 && (
-                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-                          {rest.join(" - ")}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-          </div>
-        </Section>
-
-        <Section
-          icon={<AlertTriangle className="w-4 h-4" strokeWidth={1.8} />}
-          title="Challenges"
-          delay={0.35}
-        >
-          <BulletList content={project.projectChallenges} />
-        </Section>
-
-        <Section
-          icon={<BookOpen className="w-4 h-4" strokeWidth={1.8} />}
-          title="Lessons Learned"
-          delay={0.4}
-        >
-          <BulletList content={project.projectLessonsLearned} />
-        </Section>
-
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45, duration: 0.35 }}
-          className="lg:col-span-2 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5"
-        >
-          <div className="flex items-center gap-2.5 mb-4">
-            <Rocket
-              className="w-4 h-4 text-gray-500 dark:text-gray-400"
-              strokeWidth={1.8}
-            />
-            <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
-              Future Plans
-            </h3>
-          </div>
-          <BulletList content={project.projectFuturePlans} />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.35 }}
-          className="lg:col-span-2 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5"
-        >
-          <div className="flex items-center gap-2.5 mb-4">
-            <Users
-              className="w-4 h-4 text-gray-500 dark:text-gray-400"
-              strokeWidth={1.8}
-            />
-            <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
-              Contributors
-            </h3>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {project.projectContributors.map((c, i) => (
-              <div
-                key={i}
-                className="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-4 flex items-start gap-3"
-              >
-                <div className="w-9 h-9 rounded-full bg-gray-900 dark:bg-white border border-gray-900 dark:border-white flex items-center justify-center shrink-0">
-                  <span className="text-sm font-bold text-white dark:text-gray-900">
-                    {c.name[0]}
-                  </span>
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
-                    {c.name}
-                  </p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mb-2">
-                    {c.role}
-                  </p>
-                  <div className="flex gap-3">
-                    <a
-                      href={c.githubProfile}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-                    >
-                      GitHub
-                    </a>
-                    <a
-                      href={c.linkedinProfile}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-                    >
-                      LinkedIn
-                    </a>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      </div>
+          <MessageParser content={body} />
+        </div>
+      </motion.div>
     </div>
   );
 }

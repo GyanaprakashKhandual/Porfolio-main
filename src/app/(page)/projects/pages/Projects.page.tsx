@@ -14,32 +14,111 @@ import {
   Layers,
 } from "lucide-react";
 
-interface Project {
-  projectName: string;
-  projectSlug: string;
-  projectDescription: string;
-  projectOverview: string;
-  projectType: string;
-  projectTags: string[];
-  projectTechnologies: string[];
-  projectLiveDemo: string;
-  projectFrontendRepository: string;
-  projectImage: string[];
+interface ProjectMeta {
+  slug: string;
+  title: string;
+  type: string;
+  tags: string[];
+  technologies: string[];
+  liveDemo: string;
+  repositoryFrontend: string;
+  images: string[];
+  description: string;
+  overview: string;
 }
+
+function parseFrontmatter(raw: string): {
+  meta: Record<string, unknown>;
+  body: string;
+} {
+  const match = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if (!match) return { meta: {}, body: raw };
+
+  const meta: Record<string, unknown> = {};
+  const yamlBlock = match[1];
+  const body = match[2].trim();
+
+  let currentKey = "";
+  let inArray = false;
+  const arrayBuffer: string[] = [];
+
+  for (const line of yamlBlock.split("\n")) {
+    const arrayItem = line.match(/^\s{2}-\s+(.+)/);
+    const keyValue = line.match(/^([a-zA-Z0-9_]+):\s*(.*)/);
+
+    if (arrayItem && inArray) {
+      arrayBuffer.push(arrayItem[1].trim());
+    } else if (keyValue) {
+      if (inArray && currentKey) {
+        meta[currentKey] = [...arrayBuffer];
+        arrayBuffer.length = 0;
+        inArray = false;
+      }
+      currentKey = keyValue[1];
+      const val = keyValue[2].trim();
+      if (val === "") {
+        inArray = true;
+      } else {
+        meta[currentKey] = val;
+        inArray = false;
+      }
+    }
+  }
+
+  if (inArray && currentKey) meta[currentKey] = [...arrayBuffer];
+
+  return { meta, body };
+}
+
+function extractDescription(body: string): string {
+  const lines = body.split("\n").filter((l) => l.trim() && !l.startsWith("#"));
+  return lines[0]?.replace(/^##\s*/, "").trim() ?? "";
+}
+
+function extractOverview(body: string): string {
+  const overviewMatch = body.match(/## Overview\n+([\s\S]*?)(?=\n##|$)/);
+  return overviewMatch?.[1]?.trim() ?? "";
+}
+
+async function loadProjectMeta(slug: string): Promise<ProjectMeta | null> {
+  try {
+    const res = await fetch(`/${slug}.md`);
+    if (!res.ok) return null;
+    const raw = await res.text();
+    const { meta, body } = parseFrontmatter(raw);
+
+    return {
+      slug: (meta.slug as string) ?? slug,
+      title: (meta.title as string) ?? "",
+      type: (meta.type as string) ?? "",
+      tags: (meta.tags as string[]) ?? [],
+      technologies: (meta.technologies as string[]) ?? [],
+      liveDemo: (meta.liveDemo as string) ?? "",
+      repositoryFrontend: (meta.repositoryFrontend as string) ?? "",
+      images: (meta.images as string[]) ?? [],
+      description: extractDescription(body),
+      overview: extractOverview(body),
+    };
+  } catch {
+    return null;
+  }
+}
+
+const PROJECT_SLUGS = ["caffetest", "resolution-pro"];
 
 export default function ProjectsPage() {
   const router = useRouter();
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<ProjectMeta[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/Projects.data.json")
-      .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
+    Promise.all(PROJECT_SLUGS.map(loadProjectMeta))
+      .then((results) => {
+        const valid = results.filter(Boolean) as ProjectMeta[];
+        if (valid.length === 0) throw new Error("No projects found.");
+        setProjects(valid);
       })
-      .then((data: Project[]) => setProjects(data))
       .catch(() => setError("Failed to load projects."))
       .finally(() => setLoading(false));
   }, []);
@@ -87,7 +166,7 @@ export default function ProjectsPage() {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         {projects.map((project, i) => (
           <motion.div
-            key={project.projectSlug}
+            key={project.slug}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
@@ -95,14 +174,14 @@ export default function ProjectsPage() {
               duration: 0.35,
               ease: [0.22, 1, 0.36, 1],
             }}
-            onClick={() => router.push(`/projects/${project.projectSlug}`)}
+            onClick={() => router.push(`/projects/${project.slug}`)}
             className="group cursor-pointer rounded-2xl flex flex-col bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-md dark:hover:shadow-black/30 transition-all duration-200 overflow-hidden"
           >
-            {project.projectImage?.[0] && (
+            {project.images?.[0] && (
               <div className="w-full h-44 overflow-hidden bg-gray-100 dark:bg-gray-800 shrink-0">
                 <img
-                  src={project.projectImage[0]}
-                  alt={project.projectName}
+                  src={project.images[0]}
+                  alt={project.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
@@ -117,11 +196,11 @@ export default function ProjectsPage() {
                       strokeWidth={1.8}
                     />
                     <span className="text-[11px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-medium">
-                      {project.projectType}
+                      {project.type}
                     </span>
                   </div>
                   <h2 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors truncate">
-                    {project.projectName}
+                    {project.title}
                   </h2>
                 </div>
                 <ArrowRight
@@ -131,11 +210,11 @@ export default function ProjectsPage() {
               </div>
 
               <p className="text-xs text-gray-500 dark:text-gray-500 leading-relaxed line-clamp-3 border-l-2 border-gray-200 dark:border-gray-700 pl-3">
-                {project.projectOverview?.slice(0, 200)}…
+                {project.overview.slice(0, 200)}…
               </p>
 
               <div className="flex flex-wrap gap-1.5">
-                {project.projectTags.map((tag) => (
+                {project.tags.map((tag) => (
                   <span
                     key={tag}
                     className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400"
@@ -147,7 +226,7 @@ export default function ProjectsPage() {
               </div>
 
               <div className="flex flex-wrap gap-1">
-                {project.projectTechnologies.slice(0, 6).map((tech) => (
+                {project.technologies.slice(0, 6).map((tech) => (
                   <span
                     key={tech}
                     className="text-[11px] px-2 py-0.5 rounded-md font-medium bg-gray-900 dark:bg-white text-white dark:text-gray-900 border border-gray-900 dark:border-white"
@@ -155,16 +234,16 @@ export default function ProjectsPage() {
                     {tech}
                   </span>
                 ))}
-                {project.projectTechnologies.length > 6 && (
+                {project.technologies.length > 6 && (
                   <span className="text-[11px] px-2 py-0.5 rounded-md text-gray-400 dark:text-gray-600">
-                    +{project.projectTechnologies.length - 6} more
+                    +{project.technologies.length - 6} more
                   </span>
                 )}
               </div>
 
               <div className="flex items-center gap-4 pt-2 border-t border-gray-100 dark:border-gray-800">
                 <a
-                  href={project.projectLiveDemo}
+                  href={project.liveDemo}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
@@ -174,7 +253,7 @@ export default function ProjectsPage() {
                   Live Demo
                 </a>
                 <a
-                  href={project.projectFrontendRepository}
+                  href={project.repositoryFrontend}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
