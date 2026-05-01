@@ -9,7 +9,6 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 export const dynamicParams = true;
 
-// Remove or empty out generateStaticParams entirely
 export async function generateStaticParams() {
   return [];
 }

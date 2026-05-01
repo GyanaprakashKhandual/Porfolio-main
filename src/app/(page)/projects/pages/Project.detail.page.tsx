@@ -189,7 +189,7 @@ export default function ProjectDetailPage() {
     setMeta(null);
     setBody("");
 
-    fetch(`/${slug}.md`)
+    fetch(`/projects/${slug}.md`)
       .then((r) => {
         if (!r.ok) throw new Error(`Project "${slug}" not found.`);
         return r.text();

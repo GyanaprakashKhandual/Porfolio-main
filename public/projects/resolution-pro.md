@@ -29,10 +29,7 @@ contributors:
     linkedin: https://www.linkedin.com/in/gyanaprakashkhandual/
     email: gyanprakashkhandual@gmail.com
 images:
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/resolutionpro_dashboard.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/resolutionpro_documents.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/resolutionpro_meetings.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/resolutionpro_ai_features.png
+  - https://res.cloudinary.com/dvytvjplt/image/upload/v1777617879/Gemini_Generated_Image_ozd5bhozd5bhozd5_k9ua4v.png
 ---
 
 # Resolution Pro

@@ -82,7 +82,7 @@ function extractOverview(body: string): string {
 
 async function loadProjectMeta(slug: string): Promise<ProjectMeta | null> {
   try {
-    const res = await fetch(`/${slug}.md`);
+    const res = await fetch(`/projects/${slug}.md`);
     if (!res.ok) return null;
     const raw = await res.text();
     const { meta, body } = parseFrontmatter(raw);

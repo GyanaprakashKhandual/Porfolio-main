@@ -14,20 +14,90 @@ import {
   Check,
 } from "lucide-react";
 
-interface Project {
-  projectName: string;
-  projectSlug: string;
-  projectDescription: string;
-  projectType: string;
-  projectTags: string[];
+interface ProjectMeta {
+  slug: string;
+  title: string;
+  description: string;
+  type: string;
+  tags: string[];
+}
+
+const PROJECT_SLUGS = ["caffetest", "resolution-pro"];
+
+function parseFrontmatter(raw: string): Record<string, unknown> {
+  const match = raw.match(/^---\n([\s\S]*?)\n---/);
+  if (!match) return {};
+
+  const meta: Record<string, unknown> = {};
+  const yamlBlock = match[1];
+
+  let currentKey = "";
+  let inArray = false;
+  const arrayBuffer: string[] = [];
+
+  for (const line of yamlBlock.split("\n")) {
+    const arrayItem = line.match(/^\s{2}-\s+(.+)/);
+    const keyValue = line.match(/^([a-zA-Z0-9_]+):\s*(.*)/);
+
+    if (arrayItem && inArray) {
+      arrayBuffer.push(arrayItem[1].trim());
+    } else if (keyValue) {
+      if (inArray && currentKey) {
+        meta[currentKey] = [...arrayBuffer];
+        arrayBuffer.length = 0;
+        inArray = false;
+      }
+      currentKey = keyValue[1];
+      const val = keyValue[2].trim();
+      if (val === "") {
+        inArray = true;
+      } else {
+        meta[currentKey] = val;
+        inArray = false;
+      }
+    }
+  }
+
+  if (inArray && currentKey) meta[currentKey] = [...arrayBuffer];
+
+  return meta;
+}
+
+function extractDescription(raw: string): string {
+  const body = raw.replace(/^---[\s\S]*?---\n?/, "").trim();
+  const lines = body.split("\n");
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed && !trimmed.startsWith("#")) return trimmed;
+  }
+  return "";
+}
+
+async function loadProjectMeta(slug: string): Promise<ProjectMeta | null> {
+  try {
+    const res = await fetch(`/projects/${slug}.md`);
+    if (!res.ok) return null;
+    const raw = await res.text();
+    const meta = parseFrontmatter(raw);
+
+    return {
+      slug: (meta.slug as string) ?? slug,
+      title: (meta.title as string) ?? "",
+      description: extractDescription(raw),
+      type: (meta.type as string) ?? "",
+      tags: (meta.tags as string[]) ?? [],
+    };
+  } catch {
+    return null;
+  }
 }
 
 export default function ProjectsSidebar() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [filtered, setFiltered] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<ProjectMeta[]>([]);
+  const [filtered, setFiltered] = useState<ProjectMeta[]>([]);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -48,17 +118,13 @@ export default function ProjectsSidebar() {
   }, []);
 
   useEffect(() => {
-    fetch("/Projects.data.json")
-      .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-      })
-      .then((data: Project[]) => {
-        setProjects(data);
-        setFiltered(data);
-        const tags = Array.from(
-          new Set(data.flatMap((p) => p.projectTags)),
-        ).sort();
+    Promise.all(PROJECT_SLUGS.map(loadProjectMeta))
+      .then((results) => {
+        const valid = results.filter(Boolean) as ProjectMeta[];
+        if (valid.length === 0) throw new Error("No projects found.");
+        setProjects(valid);
+        setFiltered(valid);
+        const tags = Array.from(new Set(valid.flatMap((p) => p.tags))).sort();
         setAllTags(tags);
       })
       .catch(() => setError("Failed to load projects."))
@@ -70,13 +136,12 @@ export default function ProjectsSidebar() {
     setFiltered(
       projects.filter((p) => {
         const matchesQuery =
-          p.projectName.toLowerCase().includes(q) ||
-          p.projectDescription.toLowerCase().includes(q) ||
-          p.projectTags.some((tag) => tag.toLowerCase().includes(q));
+          p.title.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.tags.some((tag) => tag.toLowerCase().includes(q));
 
         const matchesTags =
-          activeTags.size === 0 ||
-          p.projectTags.some((tag) => activeTags.has(tag));
+          activeTags.size === 0 || p.tags.some((tag) => activeTags.has(tag));
 
         return matchesQuery && matchesTags;
       }),
@@ -277,15 +342,15 @@ export default function ProjectsSidebar() {
 
         <AnimatePresence initial={false}>
           {filtered.map((project, i) => {
-            const isActive = pathname === `/projects/${project.projectSlug}`;
+            const isActive = pathname === `/projects/${project.slug}`;
             return (
               <motion.button
-                key={project.projectSlug}
+                key={project.slug}
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -8 }}
                 transition={{ delay: i * 0.04, duration: 0.2 }}
-                onClick={() => router.push(`/projects/${project.projectSlug}`)}
+                onClick={() => router.push(`/projects/${project.slug}`)}
                 className={`w-full text-left px-3 py-3 rounded-xl mb-1 group transition-all duration-150 ${
                   isActive
                     ? "bg-gray-900 dark:bg-white border border-gray-900 dark:border-white shadow-sm"
@@ -301,7 +366,7 @@ export default function ProjectsSidebar() {
                           : "text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white"
                       }`}
                     >
-                      {project.projectName}
+                      {project.title}
                     </p>
                     <p
                       className={`text-xs line-clamp-2 leading-relaxed ${
@@ -310,10 +375,10 @@ export default function ProjectsSidebar() {
                           : "text-gray-500 dark:text-gray-500"
                       }`}
                     >
-                      {project.projectDescription}
+                      {project.description}
                     </p>
                     <div className="flex flex-wrap gap-1 mt-2">
-                      {project.projectTags.slice(0, 2).map((tag) => {
+                      {project.tags.slice(0, 2).map((tag) => {
                         const isTagMatch =
                           query.length > 0 &&
                           tag.toLowerCase().includes(query.toLowerCase());

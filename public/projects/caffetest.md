@@ -28,11 +28,7 @@ contributors:
     linkedin: https://www.linkedin.com/in/gyanaprakashkhandual/
     email: gyanprakashkhandual@gmail.com
 images:
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/caffetest_dashboard.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/caffetest_kanban.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/caffetest_testcases.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/caffetest_reports.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/caffetest_bugtracking.png
+  - https://res.cloudinary.com/dvytvjplt/image/upload/v1777617884/Gemini_Generated_Image_wd43fewd43fewd43_1_lczt63.png
 ---
 
 # Caffetest
