@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Layers, Loader2 } from "lucide-react";
 import ProjectCard from "../components/Project.card";
+import { getProjectBySlug } from "../script/Projects";
 
 interface ProjectMeta {
   slug: string;
@@ -72,9 +73,20 @@ function extractDescription(body: string): string {
 
 async function loadProjectMeta(slug: string): Promise<ProjectMeta | null> {
   try {
-    const res = await fetch(`/projects/${slug}.md`);
+    const project = getProjectBySlug(slug);
+    if (!project) return null;
+
+    const res = await fetch(project.mdPath);
     if (!res.ok) return null;
+
     const raw = await res.text();
+    if (
+      raw.trimStart().startsWith("<!DOCTYPE") ||
+      raw.trimStart().startsWith("<html")
+    ) {
+      return null;
+    }
+
     const { meta, body } = parseFrontmatter(raw);
 
     return {

@@ -350,7 +350,7 @@ export const projects: Project[] = [
             "AI/ML Integration",
         ],
         status: "Live",
-        liveDemo: "https://caffetest.com",
+        liveDemo: "https://caffetest.vercel.app",
         repositoryFrontend: "",
         repositoryBackend:
             "https://github.com/gyanaprakashkhandual/caffetest-tracker",

@@ -182,15 +182,25 @@ export default function ProjectDetailPage() {
     setError(null);
     setMeta(null);
     setBody("");
+const project = getProjectBySlug(slug);
+if (!project) {
+  setError(`Project "${slug}" not found.`);
+  setLoading(false);
+  return;
+}
 
-    fetch(`/projects/${slug}.md`)
+fetch(project.mdPath)  
       .then((r) => {
         if (!r.ok) throw new Error(`Project "${slug}" not found.`);
         return r.text();
       })
       .then((raw) => {
         const { meta: parsed, body: content } = parseFrontmatter(raw);
-
+console.log("[ProjectDetail] Fetched path:", `/projects/${slug}.md`, "| First 100 chars:", raw.slice(0, 100));
+  
+  if (raw.trimStart().startsWith("<!DOCTYPE") || raw.trimStart().startsWith("<html")) {
+    throw new Error(`Project "${slug}" not found.`);
+  }
         setMeta({
           slug: (parsed.slug as string) ?? (slug as string),
           title: (parsed.title as string) ?? "",

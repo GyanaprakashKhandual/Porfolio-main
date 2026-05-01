@@ -16,7 +16,7 @@ export const BrandIcon = ({
     <path
       d="M15 52C15 28.8 30.8 13 50 13C69.2 13 85 28.8 85 52"
       stroke="#000000"
-      stroke-width="10"
+      strokeWidth="10"
       stroke-linecap="round"
       fill="none"
     />
