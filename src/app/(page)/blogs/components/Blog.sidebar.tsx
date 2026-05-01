@@ -64,7 +64,9 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="w-72 shrink-0 flex flex-col h-[calc(100vh-56px)] bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 overflow-hidden">  <div className="px-4 pt-5 pb-4 border-b border-gray-200 dark:border-gray-800">
+    <aside className="w-72 shrink-0 flex flex-col h-[calc(100vh-56px)] bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 overflow-hidden">
+      {" "}
+      <div className="px-4 pt-5 pb-4 border-b border-gray-200 dark:border-gray-800">
         <div className="flex items-center gap-2 mb-3">
           <BookOpen
             className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500"
@@ -216,7 +218,6 @@ export default function Sidebar() {
           )}
         </AnimatePresence>
       </div>
-
       <div className="flex-1 overflow-y-auto py-2 px-2 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
         {filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 gap-2 px-4">
@@ -324,7 +325,6 @@ export default function Sidebar() {
           })}
         </AnimatePresence>
       </div>
-
       <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-800">
         <p className="text-[11px] text-gray-400 dark:text-gray-600 text-center">
           {`${blogs.length} total guide${blogs.length !== 1 ? "s" : ""}`}

@@ -55,15 +55,21 @@ export default async function SlugPage({ params }: Props) {
           <div className="flex flex-wrap items-center gap-6 pt-6 border-t border-zinc-200 dark:border-zinc-800">
             <div className="flex items-center gap-2">
               <User className="w-4 h-4 text-zinc-400" />
-              <span className="text-sm text-zinc-600 dark:text-zinc-400">{blog.author}</span>
+              <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                {blog.author}
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4 text-zinc-400" />
-              <span className="text-sm text-zinc-600 dark:text-zinc-400">{blog.date}</span>
+              <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                {blog.date}
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-zinc-400" />
-              <span className="text-sm text-zinc-600 dark:text-zinc-400">{blog.readTime}</span>
+              <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                {blog.readTime}
+              </span>
             </div>
           </div>
         </div>

@@ -1,8 +1,6 @@
 import { Metadata } from "next";
 import ProjectDetailPage from "../pages/Project.detail.page";
 
-const PROJECT_SLUGS = ["caffetest", "resolution-pro"];
-
 function parseFrontmatter(raw: string): Record<string, unknown> {
   const match = raw.match(/^---\n([\s\S]*?)\n---/);
   if (!match) return {};
@@ -55,7 +53,7 @@ function extractDescription(raw: string): string {
 async function getProjectMeta(slug: string) {
   try {
     const res = await fetch(
-      `${process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : "http://localhost:3000"}/projects/${slug}.md`
+      `${process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : "http://localhost:3000"}/projects/${slug}.md`,
     );
     if (!res.ok) return null;
     const raw = await res.text();

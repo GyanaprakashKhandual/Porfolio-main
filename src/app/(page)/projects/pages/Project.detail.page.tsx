@@ -274,14 +274,18 @@ export default function ProjectDetailPage() {
           </p>
           <div className="flex flex-wrap items-start gap-6 pt-6 border-t border-zinc-200 dark:border-zinc-800">
             <div>
-              <p className="text-xs uppercase tracking-widest text-zinc-400 mb-2">Type</p>
+              <p className="text-xs uppercase tracking-widest text-zinc-400 mb-2">
+                Type
+              </p>
               <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
                 {meta.type}
               </span>
             </div>
             {meta.tags && meta.tags.length > 0 && (
               <div>
-                <p className="text-xs uppercase tracking-widest text-zinc-400 mb-2">Tags</p>
+                <p className="text-xs uppercase tracking-widest text-zinc-400 mb-2">
+                  Tags
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {meta.tags.map((tag) => (
                     <span
@@ -296,7 +300,9 @@ export default function ProjectDetailPage() {
             )}
             {meta.technologies && meta.technologies.length > 0 && (
               <div>
-                <p className="text-xs uppercase tracking-widest text-zinc-400 mb-2">Tech Stack</p>
+                <p className="text-xs uppercase tracking-widest text-zinc-400 mb-2">
+                  Tech Stack
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {meta.technologies.slice(0, 5).map((tech) => (
                     <span
@@ -320,100 +326,100 @@ export default function ProjectDetailPage() {
 
       <div className="p-6 lg:p-8 pt-0">
         {meta.images?.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <ImageCarousel images={meta.images} />
+          </motion.div>
+        )}
+
         <motion.div
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
+          className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 mb-5"
         >
-          <ImageCarousel images={meta.images} />
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <p className="text-[11px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-medium mb-1.5">
+                {meta.type}
+              </p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">
+                {meta.title}
+              </h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                {meta.description}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap sm:flex-col gap-2 shrink-0">
+              {meta.liveDemo && (
+                <a
+                  href={meta.liveDemo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:opacity-90 transition-opacity"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" strokeWidth={2} />
+                  Live Demo
+                </a>
+              )}
+              {meta.repositoryFrontend && (
+                <a
+                  href={meta.repositoryFrontend}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all"
+                >
+                  <Github className="w-3.5 h-3.5" strokeWidth={1.8} />
+                  Frontend
+                </a>
+              )}
+              {meta.repositoryBackend && (
+                <a
+                  href={meta.repositoryBackend}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all"
+                >
+                  <Code2 className="w-3.5 h-3.5" strokeWidth={1.8} />
+                  Backend
+                </a>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-wrap gap-1.5">
+            {meta.tags.map((tag) => (
+              <span
+                key={tag}
+                className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400"
+              >
+                <Tag className="w-2.5 h-2.5" strokeWidth={2} />
+                {tag}
+              </span>
+            ))}
+            {meta.technologies.map((tech) => (
+              <span
+                key={tech}
+                className="text-[11px] px-2 py-0.5 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 border border-gray-900 dark:border-white font-medium"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
         </motion.div>
-      )}
 
-      <motion.div
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 mb-5"
-      >
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div className="flex-1 min-w-0">
-            <p className="text-[11px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-medium mb-1.5">
-              {meta.type}
-            </p>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">
-              {meta.title}
-            </h1>
-            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-              {meta.description}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap sm:flex-col gap-2 shrink-0">
-            {meta.liveDemo && (
-              <a
-                href={meta.liveDemo}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:opacity-90 transition-opacity"
-              >
-                <ExternalLink className="w-3.5 h-3.5" strokeWidth={2} />
-                Live Demo
-              </a>
-            )}
-            {meta.repositoryFrontend && (
-              <a
-                href={meta.repositoryFrontend}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all"
-              >
-                <Github className="w-3.5 h-3.5" strokeWidth={1.8} />
-                Frontend
-              </a>
-            )}
-            {meta.repositoryBackend && (
-              <a
-                href={meta.repositoryBackend}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all"
-              >
-                <Code2 className="w-3.5 h-3.5" strokeWidth={1.8} />
-                Backend
-              </a>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-wrap gap-1.5">
-          {meta.tags.map((tag) => (
-            <span
-              key={tag}
-              className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400"
-            >
-              <Tag className="w-2.5 h-2.5" strokeWidth={2} />
-              {tag}
-            </span>
-          ))}
-          {meta.technologies.map((tech) => (
-            <span
-              key={tech}
-              className="text-[11px] px-2 py-0.5 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 border border-gray-900 dark:border-white font-medium"
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.35 }}
-        className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6"
-      >
-        <div
-          className="prose prose-sm dark:prose-invert max-w-none
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.35 }}
+          className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6"
+        >
+          <div
+            className="prose prose-sm dark:prose-invert max-w-none
           prose-headings:font-bold prose-headings:tracking-tight
           prose-h1:text-2xl prose-h1:text-gray-900 dark:prose-h1:text-white prose-h1:mb-4
           prose-h2:text-base prose-h2:text-gray-900 dark:prose-h2:text-white prose-h2:mt-8 prose-h2:mb-3 prose-h2:pb-2 prose-h2:border-b prose-h2:border-gray-100 dark:prose-h2:border-gray-800
@@ -424,10 +430,10 @@ export default function ProjectDetailPage() {
           prose-code:text-xs prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-gray-700 dark:prose-code:text-gray-300
           prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
           prose-hr:border-gray-100 dark:prose-hr:border-gray-800"
-        >
-          <MessageParser content={body} />
-        </div>
-      </motion.div>
+          >
+            <MessageParser content={body} />
+          </div>
+        </motion.div>
       </div>
     </div>
   );

@@ -11,7 +11,9 @@ interface Props {
 
 function SkeletonBlock({ className }: { className?: string }) {
   return (
-    <div className={`rounded-lg bg-zinc-100 dark:bg-zinc-800 animate-pulse ${className}`} />
+    <div
+      className={`rounded-lg bg-zinc-100 dark:bg-zinc-800 animate-pulse ${className}`}
+    />
   );
 }
 
@@ -57,7 +59,10 @@ export default function BlogContent({ mdPath }: Props) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <div className="w-12 h-12 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900/50 flex items-center justify-center">
-          <AlertTriangle className="w-5 h-5 text-red-500 dark:text-red-400" strokeWidth={1.8} />
+          <AlertTriangle
+            className="w-5 h-5 text-red-500 dark:text-red-400"
+            strokeWidth={1.8}
+          />
         </div>
         <p className="text-sm text-zinc-500 dark:text-zinc-400">{error}</p>
       </div>
@@ -65,7 +70,8 @@ export default function BlogContent({ mdPath }: Props) {
 
   return (
     <div className="max-w-3xl mx-auto py-12">
-      <div className="prose prose-zinc dark:prose-invert max-w-none
+      <div
+        className="prose prose-zinc dark:prose-invert max-w-none
         prose-headings:font-bold prose-headings:tracking-tight
         prose-h1:text-3xl prose-h1:text-black dark:prose-h1:text-white prose-h1:mb-6 prose-h1:mt-0
         prose-h2:text-xl prose-h2:text-black dark:prose-h2:text-white prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-zinc-100 dark:prose-h2:border-zinc-800
