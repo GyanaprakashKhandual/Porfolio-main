@@ -25,8 +25,6 @@ import {
   SidebarClose,
 } from "lucide-react";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 interface Skill {
   skillId: string;
   skillCategory: string;
@@ -44,8 +42,6 @@ interface SkillsContextValue {
   selectedKey: string;
 }
 
-// ─── Context ──────────────────────────────────────────────────────────────────
-
 const SkillsContext = createContext<SkillsContextValue>({
   skills: [],
   loading: true,
@@ -55,8 +51,6 @@ const SkillsContext = createContext<SkillsContextValue>({
 function useSkillsContext() {
   return useContext(SkillsContext);
 }
-
-// ─── Category config ──────────────────────────────────────────────────────────
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   Frontend: <Code2 className="w-3.5 h-3.5" strokeWidth={1.8} />,
@@ -68,8 +62,6 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   "Ethical Hacking": <Shield className="w-3.5 h-3.5" strokeWidth={1.8} />,
   All: <Layers className="w-3.5 h-3.5" strokeWidth={1.8} />,
 };
-
-// ─── Badges ───────────────────────────────────────────────────────────────────
 
 function ExperienceBadge({ exp }: { exp: string }) {
   const years = parseInt(exp);
@@ -138,8 +130,6 @@ function ProficiencyBar({ value }: { value: string }) {
   );
 }
 
-// ─── Skeleton ─────────────────────────────────────────────────────────────────
-
 function SkeletonRow() {
   return (
     <tr className="border-b border-gray-100 dark:border-gray-800">
@@ -154,8 +144,6 @@ function SkeletonRow() {
     </tr>
   );
 }
-
-// ─── Sort icon ────────────────────────────────────────────────────────────────
 
 type SortKey = "skillName" | "projects" | "experience" | "proficiency";
 type SortDir = "asc" | "desc";
@@ -188,8 +176,6 @@ function SortIcon({
     />
   );
 }
-
-// ─── Sidebar ──────────────────────────────────────────────────────────────────
 
 function Sidebar({
   categories,
@@ -298,8 +284,6 @@ function Sidebar({
     </motion.aside>
   );
 }
-
-// ─── Main table view ──────────────────────────────────────────────────────────
 
 function SkillsTable() {
   const { skills, loading, selectedKey } = useSkillsContext();
@@ -570,7 +554,7 @@ export default function SkillsPage() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
-    fetch("/Skills.data.json")
+    fetch("/skills/skill.data.json")
       .then((r) => r.json())
       .then((data: Skill[]) => {
         setAllSkills(data);
