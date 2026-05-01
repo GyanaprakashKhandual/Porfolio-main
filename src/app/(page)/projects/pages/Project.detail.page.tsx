@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/set-state-in-effect */
@@ -182,25 +181,33 @@ export default function ProjectDetailPage() {
     setError(null);
     setMeta(null);
     setBody("");
-const project = getProjectBySlug(slug);
-if (!project) {
-  setError(`Project "${slug}" not found.`);
-  setLoading(false);
-  return;
-}
+    const project = getProjectBySlug(slug);
+    if (!project) {
+      setError(`Project "${slug}" not found.`);
+      setLoading(false);
+      return;
+    }
 
-fetch(project.mdPath)  
+    fetch(project.mdPath)
       .then((r) => {
         if (!r.ok) throw new Error(`Project "${slug}" not found.`);
         return r.text();
       })
       .then((raw) => {
         const { meta: parsed, body: content } = parseFrontmatter(raw);
-console.log("[ProjectDetail] Fetched path:", `/projects/${slug}.md`, "| First 100 chars:", raw.slice(0, 100));
-  
-  if (raw.trimStart().startsWith("<!DOCTYPE") || raw.trimStart().startsWith("<html")) {
-    throw new Error(`Project "${slug}" not found.`);
-  }
+        console.log(
+          "[ProjectDetail] Fetched path:",
+          `/projects/${slug}.md`,
+          "| First 100 chars:",
+          raw.slice(0, 100),
+        );
+
+        if (
+          raw.trimStart().startsWith("<!DOCTYPE") ||
+          raw.trimStart().startsWith("<html")
+        ) {
+          throw new Error(`Project "${slug}" not found.`);
+        }
         setMeta({
           slug: (parsed.slug as string) ?? (slug as string),
           title: (parsed.title as string) ?? "",
@@ -272,66 +279,17 @@ console.log("[ProjectDetail] Fetched path:", `/projects/${slug}.md`, "| First 10
           All Projects
         </motion.button>
 
-        <div className="mb-8">
+        <div>
           <h1 className="text-4xl font-bold text-black dark:text-white mb-3 leading-tight tracking-tight">
             {meta.title}
           </h1>
           <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-6 leading-relaxed">
             {meta.description}
           </p>
-          <div className="flex flex-wrap items-start gap-6 pt-6 border-t border-zinc-200 dark:border-zinc-800">
-            <div>
-              <p className="text-xs uppercase tracking-widest text-zinc-400 mb-2">
-                Type
-              </p>
-              <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
-                {meta.type}
-              </span>
-            </div>
-            {meta.tags && meta.tags.length > 0 && (
-              <div>
-                <p className="text-xs uppercase tracking-widest text-zinc-400 mb-2">
-                  Tags
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {meta.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center text-xs px-2 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-            {meta.technologies && meta.technologies.length > 0 && (
-              <div>
-                <p className="text-xs uppercase tracking-widest text-zinc-400 mb-2">
-                  Tech Stack
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {meta.technologies.slice(0, 5).map((tech) => (
-                    <span
-                      key={tech}
-                      className="inline-flex items-center text-xs px-2 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                  {meta.technologies.length > 5 && (
-                    <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                      +{meta.technologies.length - 5} more
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </div>
 
-      <div className="p-6 lg:p-8 pt-0">
+      <div className="p-6 lg:p-6 pt-0">
         {meta.images?.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: -12 }}

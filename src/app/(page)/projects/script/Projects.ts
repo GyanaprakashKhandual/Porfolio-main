@@ -74,8 +74,8 @@ export const projects: Project[] = [
         repositoryBackend:
             "https://github.com/gyanaprakashkhandual",
         image:
-            "/images/projects/web/resolution-pro.png",
-        mdPath: "/projects/resolution-pro.md",
+            "/images/projects/web/resolution.pro.png",
+        mdPath: "/projects/web/collaboration/resolution.pro.web.md",
     },
     {
         slug: "mega-jewelers",
@@ -104,7 +104,7 @@ export const projects: Project[] = [
             "https://github.com/gyanaprakashkhandual",
         image:
             "/images/projects/mega-jewelers.png",
-        mdPath: "/projects/web/collboration/mega.jwelers.md",
+        mdPath: "/projects/web/collaboration/mega.jwelers.web.md",
     },
     {
         slug: "rr-crop",
@@ -126,14 +126,14 @@ export const projects: Project[] = [
             "Render",
         ],
         status: "Live",
-        liveDemo: "https://rr-crop.vercel.app/",
+        liveDemo: "https://rrcrop.avidusinteractive.com",
         repositoryFrontend:
-            "https://github.com/gyanaprakashkhandual/rr-crop-frontend",
+            "",
         repositoryBackend:
-            "https://github.com/gyanaprakashkhandual/rr-crop-backend",
+            "",
         image:
-            "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/rrcrop_dashboard.png",
-        mdPath: "/projects/rr-crop.md",
+            "/images/projects/web/rr.crop/web.png",
+        mdPath: "/projects/web/collaboration/rr.crop.web.md",
     },
     {
         slug: "fetch",
@@ -151,11 +151,11 @@ export const projects: Project[] = [
             "Vercel",
         ],
         status: "Live",
-        liveDemo: "https://fetch.vercel.app",
-        repositoryFrontend: "",
-        repositoryBackend: "",
-        image: "",
-        mdPath: "/projects/fetch.md",
+        liveDemo: "https://fectch.vercel.app",
+        repositoryFrontend: "https://github.com/gyanaprakashkhandual/fetch-backend",
+        repositoryBackend: "https://github.com/gyanaprakashkhandual/fetch-backend",
+        image: "/images/projects/web/fetch.web.png",
+        mdPath: "/projects/web/private/fetch.web.md",
     },
     {
         slug: "feel",
@@ -176,8 +176,8 @@ export const projects: Project[] = [
         liveDemo: "http://feel.vercel.app",
         repositoryFrontend: "",
         repositoryBackend: "",
-        image: "",
-        mdPath: "/projects/feel.md",
+        image: "/images/projects/web/feel.web.png",
+        mdPath: "/projects/web/private/feel.web.md",
     },
     {
         slug: "pisl-infra",
@@ -205,14 +205,14 @@ export const projects: Project[] = [
             "SVG",
             "Premiere Motion",
         ],
-        status: "Live",
-        liveDemo: "https://pisl-performance-report.vercel.app/",
+        status: "Tested",
+        liveDemo: "",
         repositoryFrontend: "",
         repositoryBackend:
-            "https://github.com/gyanaprakashkhandual/pisl-infra-testing",
+            "https://github.com/gyanaprakashkhandual/pislinfra",
         image:
-            "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/pisl_dashboard.png",
-        mdPath: "/projects/pisl-infra.md",
+            "/images/projects/test/pisl.infra.test.png",
+        mdPath: "/projects/test/collaboration/pisl.infra.test.md",
     },
     {
         slug: "resolution-pro-testing",
@@ -241,18 +241,18 @@ export const projects: Project[] = [
             "Bug Tracker",
             "Ledge Meter",
         ],
-        status: "Live",
-        liveDemo: "https://resolution-pro-testing-report.vercel.app/",
+        status: "Tested",
+        liveDemo: "",
         repositoryFrontend: "",
         repositoryBackend:
-            "https://github.com/gyanaprakashkhandual/resolution-pro-testing",
+            "https://github.com/gyanaprakashkhandual/resolutionpro",
         image:
-            "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/resolution_testing_dashboard.png",
-        mdPath: "/projects/resolution-pro-testing.md",
+            "/images/projects/test/resolution.pro.test.md",
+        mdPath: "/projects/test/collaboration/resolution.pro.test.md",
     },
     {
         slug: "mega-jewelers-testing",
-        title: "Mega Jewelers Testing",
+        title: "Mega Jewelers Automation Testing",
         description:
             "End-to-end testing infrastructure for MegaJewelers including UI automation, API testing, performance testing, and enterprise-grade QA strategy for a complete e-commerce platform.",
         type: "Automation & Testing Infrastructure",
@@ -278,14 +278,14 @@ export const projects: Project[] = [
             "Zoho Sheets",
             "Zoho Workspace",
         ],
-        status: "Live",
-        liveDemo: "https://mega-jewelers-testing-report.vercel.app/",
+        status: "Tested",
+        liveDemo: "",
         repositoryFrontend: "",
         repositoryBackend:
-            "https://github.com/gyanaprakashkhandual/mega-jewelers-testing",
+            "https://github.com/gyanaprakashkhandual/megajwelers",
         image:
-            "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/megajewelers_testing_dashboard.png",
-        mdPath: "/projects/mega-jewelers-testing.md",
+            "images/project/test/mega.jewelers.test.png",
+        mdPath: "/projects/test/collaboration/mega.jewelers.test.md",
     },
     {
         slug: "rr-crop-testing",
@@ -314,14 +314,14 @@ export const projects: Project[] = [
             "Google Sheets",
             "Zoho Workspace",
         ],
-        status: "Live",
-        liveDemo: "https://rr-crop-testing-report.vercel.app/",
-        repositoryFrontend: "",
+        status: "Tested",
+        liveDemo: "",
+        repositoryFrontend: "https://github.com/gyanaprakashkhandual/rrcrop",
         repositoryBackend:
-            "https://github.com/gyanaprakashkhandual/rr-crop-testing",
+            "https://github.com/gyanaprakashkhandual/rrcrop",
         image:
-            "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/rrcrop_testing_dashboard.png",
-        mdPath: "/projects/rr-crop-testing.md",
+            "/images/projects/test/rr.crop.test.png",
+        mdPath: "/projects/test/collaboration/rr.crop.test.md",
     },
     {
         slug: "caffetest-tracker",
@@ -350,13 +350,13 @@ export const projects: Project[] = [
             "AI/ML Integration",
         ],
         status: "Live",
-        liveDemo: "https://caffetest.vercel.app",
+        liveDemo: "https://marketplace.visualstudio.com/items?itemName=gyanaprakashkhandual.caffetest-tracker",
         repositoryFrontend: "",
         repositoryBackend:
-            "https://github.com/gyanaprakashkhandual/caffetest-tracker",
+            "https://github.com/gyanaprakashkhandual/caffetesttracker",
         image:
-            "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/caffetest_vscode.png",
-        mdPath: "/projects/caffetest-tracker.md",
+            "/images/projects/vs-code-extension/caffetest.tracker.png",
+        mdPath: "/projects/vs-code-extension/caffetest.tracker.vsce.md",
     },
     {
         slug: "selenium-cucumber-pro",
@@ -385,13 +385,13 @@ export const projects: Project[] = [
         ],
         status: "Live",
         liveDemo:
-            "https://marketplace.visualstudio.com/items?itemName=selenium-cucumber-pro",
+            "https://marketplace.visualstudio.com/items?itemName=gyanaprakashkhandual.selenium-cucumber",
         repositoryFrontend: "",
         repositoryBackend:
-            "https://github.com/gyanaprakashkhandual/selenium-cucumber-pro",
+            "https://github.com/gyanaprakashkhandual/seleniumcucumber",
         image:
-            "https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/selenium_cucumber_dashboard.png",
-        mdPath: "/projects/selenium-cucumber-pro.md",
+            "/images/projects/vs-code-extension/selenium.cucumber.vsce.png",
+        mdPath: "/projects/vs-code-extension/selenium.cucumber.vsce.md",
     },
     {
         slug: "taar",
@@ -416,14 +416,14 @@ export const projects: Project[] = [
         ],
         status: "Live",
         liveDemo: "https://taar.vercel.app",
-        repositoryFrontend: "",
-        repositoryBackend: "",
-        image: "",
-        mdPath: "/projects/taar.md",
+        repositoryFrontend: "https://github.com/gyanaprakashkhandual/taar",
+        repositoryBackend: "https://github.com/gyanaprakashkhandual/taar-backend",
+        image: "/images/projects/chrome-extension/taar.ce.png",
+        mdPath: "/projects/chrome-extension/taar.ce.md",
     },
     {
         slug: "show-markdown",
-        title: "ShowMarkdown",
+        title: "Show Markdown",
         description:
             "An NPM package that enables React applications to render Markdown (.md) content beautifully and efficiently, providing a simple and flexible API for developers.",
         type: "NPM Package / React Library",
@@ -437,11 +437,11 @@ export const projects: Project[] = [
             "Rollup",
         ],
         status: "Published",
-        liveDemo: "",
-        repositoryFrontend: "",
-        repositoryBackend: "",
-        image: "",
-        mdPath: "/projects/show-markdown.md",
+        liveDemo: "https://www.npmjs.com/package/showmarkdown",
+        repositoryFrontend: "https://github.com/gyanaprakashkhandual/showmarkdown",
+        repositoryBackend: "https://github.com/gyanaprakashkhanual",
+        image: "/images/projects/npm-packages/show.markdown.npm.md",
+        mdPath: "/projects/npm-packages/show.markdown.npm.md",
     },
     {
         slug: "todo-mobile",
@@ -464,12 +464,12 @@ export const projects: Project[] = [
             "AsyncStorage",
             "Node.js",
         ],
-        status: "In Development",
-        liveDemo: "",
-        repositoryFrontend: "",
-        repositoryBackend: "",
+        status: "Live",
+        liveDemo: "https://toodoooo.vercel.app",
+        repositoryFrontend: "https://github.com/gyanaprakashkhandual/todo-mobile",
+        repositoryBackend: "https://github.com/gyanaprakashkhandual/todo-backend",
         image: "",
-        mdPath: "/projects/todo-mobile.md",
+        mdPath: "/projects/mobile-applications/todo.mobile.d",
     },
     {
         slug: "todo-desktop",
@@ -492,12 +492,12 @@ export const projects: Project[] = [
             "Node.js",
             "SQLite",
         ],
-        status: "In Development",
-        liveDemo: "",
-        repositoryFrontend: "",
-        repositoryBackend: "",
-        image: "",
-        mdPath: "/projects/todo-desktop.md",
+        status: "Live",
+        liveDemo: "https://toodoooo.vercel.app",
+        repositoryFrontend: "https://github.com/gyanaprakashkhandual/todo-desktop",
+        repositoryBackend: "https://github.com/gyanaprakashkhandual/todo-backend",
+        image: "/images/projects/desktop-applications/todo.desktop.png",
+        mdPath: "/projects/desktop-applications/todo.desktop.md",
     },
 ];
 
