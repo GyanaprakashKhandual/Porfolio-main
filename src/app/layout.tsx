@@ -3,10 +3,14 @@ import "./globals.css";
 import Navbar from "@/app/components/Nav.bar";
 import { ThemeProvider } from "@/app/context/Theme.context";
 import StoreProvider from "./context/Store.context";
+
 export const metadata: Metadata = {
-  title: "Gyan's",
-  description:
-    "Personal portfolio showcasing projects, skills, and experience.",
+  title: "Home - Gyan's",
+  description: "This is the Home page of my portfolio website. Explore my projects, blogs, and skills. Learn about my experience and get in touch.",
+  icons: {
+    icon: "/icons/favicon.svg",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
