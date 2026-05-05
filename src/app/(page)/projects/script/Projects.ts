@@ -99,7 +99,7 @@ export const projects: Project[] = [
         repositoryBackend:
             "https://github.com/gyanaprakashkhandual",
         image:
-            "/images/projects/mega-jewelers.png",
+            "/images/projects/web/mega.jewelers.web.png",
         mdPath: "/projects/web/collaboration/mega.jwelers.web.md",
     },
     {
