@@ -31,11 +31,7 @@ contributors:
     linkedin: https://www.linkedin.com/in/gyanaprakashkhandual/
     email: gyanprakashkhandual@gmail.com
 images:
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/rrcrop_testing_dashboard.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/rrcrop_testing_reports.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/rrcrop_testing_cypress.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/rrcrop_testing_api.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/rrcrop_testing_performance.png
+  - /images/projects/test/rr.crop.test.png
 ---
 
 # RR Crop Testing

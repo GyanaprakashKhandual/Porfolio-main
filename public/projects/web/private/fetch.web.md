@@ -23,6 +23,8 @@ contributors:
     github: https://github.com/gyanaprakashkhandual
     linkedin: https://www.linkedin.com/in/gyanaprakashkhandual/
     email: gyanprakashkhandual@gmail.com
+images:
+  - /images/projects/web/fetch.web.png
 ---
 
 # Fetch

@@ -30,11 +30,7 @@ contributors:
     linkedin: https://www.linkedin.com/in/gyanaprakashkhandual/
     email: gyanaprakashkhandual@gmail.com
 images:
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/occusearch_testing_dashboard.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/occusearch_manual_testing.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/occusearch_rest_assured.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/occusearch_grafana_performance.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/occusearch_bug_reports.png
+  - /images/projects/test/occusearch.test.png
 ---
 
 # OccuSearch Testing

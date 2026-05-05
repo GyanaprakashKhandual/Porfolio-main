@@ -29,11 +29,7 @@ contributors:
     linkedin: https://www.linkedin.com/in/gyanaprakashkhandual/
     email: gyanprakashkhandual@gmail.com
 images:
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/megajewelers_home.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/megajewelers_products.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/megajewelers_inventory.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/megajewelers_dashboard.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/megajewelers_orders.png
+  - /images/projects/web/mega.jewelers.web.png
 ---
 
 # Mega Jewelers

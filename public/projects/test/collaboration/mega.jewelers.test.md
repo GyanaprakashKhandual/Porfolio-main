@@ -32,11 +32,7 @@ contributors:
     linkedin: https://www.linkedin.com/in/gyanaprakashkhandual/
     email: gyanprakashkhandual@gmail.com
 images:
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/megajewelers_testing_dashboard.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/megajewelers_testing_reports.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/megajewelers_testing_selenium.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/megajewelers_testing_api.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/megajewelers_testing_performance.png
+  - images/projects/test/mega.jewelers.test.png
 ---
 
 # Mega Jewelers Testing

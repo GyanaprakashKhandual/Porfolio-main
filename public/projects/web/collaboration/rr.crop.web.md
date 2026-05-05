@@ -29,11 +29,7 @@ contributors:
     linkedin: https://www.linkedin.com/in/gyanaprakashkhandual/
     email: gyanprakashkhandual@gmail.com
 images:
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/rrcrop_dashboard.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/rrcrop_tasks.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/rrcrop_projects.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/rrcrop_staff.png
-  - https://res.cloudinary.com/dzj6s9o9c/image/upload/v1700000000/rrcrop_analytics.png
+  - /images/projects/web/rr.crop.web.png
 ---
 
 # Rr Crop
