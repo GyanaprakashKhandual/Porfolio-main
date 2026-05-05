@@ -70,16 +70,18 @@ function AnnouncementWindow() {
                 />
               </div>
               <h2 className="text-black dark:text-white text-lg font-semibold leading-snug">
-                Send ENV is live
+                Assignmate is live
               </h2>
             </div>
 
             {/* Description */}
             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed mb-4 pl-11">
-              Now share your env file with encrypted format with Github is JavaScript application
+              Just upload your handwriting with image and calligrapher and
+              generating assignment in your handwritten format from AI with PDF
+              format.
             </p>
 
-            {/* Install command */}
+            {/*
             <div className="flex items-center gap-2 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2.5 mb-4">
               <Terminal
                 size={13}
@@ -89,11 +91,12 @@ function AnnouncementWindow() {
                 npm i sendenv
               </code>
             </div>
+            */}
 
             {/* CTA Buttons */}
             <div className="flex gap-2.5 mb-3">
               <motion.a
-                href="http://www.npmjs.com/package/sendenv"
+                href="https://asignmate.vercel.app"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.02 }}
@@ -104,7 +107,7 @@ function AnnouncementWindow() {
                 Visit Site
               </motion.a>
               <motion.a
-                href="https://github.com/gyanaprakashkhandual"
+                href="https://github.com/gyanaprakashkhandual/assignmate"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.02 }}
